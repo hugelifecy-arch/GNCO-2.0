@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id @default(cuid())
+  clerkId        String          @unique
+  email          String          @unique
+  name           String?
+  organization   String?
+  role           String          @default("viewer")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  accessRequests AccessRequest[]
+  auditLogs      AuditLog[]
+
+  @@map("users")
+}
+
+model AccessRequest {
+  id           String    @id @default(cuid())
+  name         String
+  organization String
+  role         String
+  aumRange     String
+  email        String
+  status       String    @default("pending")
+  submittedAt  DateTime  @default(now())
+  reviewedAt   DateTime?
+  reviewedBy   String?
+  userId       String?
+  user         User?     @relation(fields: [userId], references: [id])
+
+  @@map("access_requests")
+}
+
+model ArchitectSession {
+  id              String    @id @default(cuid())
+  userId          String
+  briefData       Json
+  recommendations Json?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("architect_sessions")
+}
+
+model LP {
+  id                    String         @id @default(cuid())
+  legalName             String
+  entityType            String
+  domicile              String
+  commitmentAmount      Decimal
+  calledCapital         Decimal        @default(0)
+  distributionsReceived Decimal        @default(0)
+  kycStatus             String         @default("incomplete")
+  subscriptionStatus    String         @default("draft")
+  relationshipManager   String?
+  onboardedDate         DateTime?
+  organizationId        String
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  allocations           LPAllocation[]
+
+  @@map("lps")
+}
+
+model CapitalCall {
+  id             String         @id @default(cuid())
+  fundName       String
+  callDate       DateTime
+  dueDate        DateTime
+  totalAmount    Decimal
+  purpose        String
+  status         String         @default("draft")
+  organizationId String
+  createdAt      DateTime       @default(now())
+  allocations    LPAllocation[]
+
+  @@map("capital_calls")
+}
+
+model LPAllocation {
+  id               String       @id @default(cuid())
+  capitalCallId    String?
+  distributionId   String?
+  lpId             String
+  allocationAmount Decimal
+  paidAmount       Decimal      @default(0)
+  paidDate         DateTime?
+  status           String       @default("pending")
+  lp               LP           @relation(fields: [lpId], references: [id])
+  capitalCall      CapitalCall? @relation(fields: [capitalCallId], references: [id])
+
+  @@map("lp_allocations")
+}
+
+model FundDocument {
+  id             String     @id @default(cuid())
+  name           String
+  fundName       String
+  category       String
+  fileUrl        String
+  fileSize       String
+  fileType       String
+  version        Int        @default(1)
+  expiryDate     DateTime?
+  uploadedBy     String
+  organizationId String
+  createdAt      DateTime   @default(now())
+  accessLogs     AuditLog[]
+
+  @@map("fund_documents")
+}
+
+model AuditLog {
+  id         String        @id @default(cuid())
+  userId     String
+  action     String
+  entityType String
+  entityId   String
+  metadata   Json?
+  ipAddress  String?
+  timestamp  DateTime      @default(now())
+  user       User          @relation(fields: [userId], references: [id])
+  document   FundDocument? @relation(fields: [entityId], references: [id])
+
+  @@map("audit_logs")
+}
