@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 
 import { LPRegistryTable } from '@/components/operator/LPRegistryTable'
 import { MOCK_LPS } from '@/lib/mock-data'
+import { ComingSoonButton } from '@/components/shared/ComingSoonButton'
 
 export default function LPRegistryPage() {
   const [search, setSearch] = useState('')
@@ -24,7 +25,7 @@ export default function LPRegistryPage() {
           </span>
         </div>
         <div className="flex gap-2">
-          <button className="rounded border border-bg-border px-4 py-2 text-sm">Export CSV</button>
+          <ComingSoonButton>Export CSV (coming soon)</ComingSoonButton>
           <button className="rounded border border-accent-gold/40 bg-accent-gold/10 px-4 py-2 text-sm text-accent-gold">+ Add LP</button>
         </div>
       </header>

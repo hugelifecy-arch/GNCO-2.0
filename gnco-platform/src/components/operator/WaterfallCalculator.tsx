@@ -6,6 +6,7 @@ import { calculateWaterfall } from '@/lib/waterfall-calculator'
 import { MOCK_FUNDS, MOCK_LPS } from '@/lib/mock-data'
 import type { WaterfallOutput } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils'
+import { ComingSoonButton } from '@/components/shared/ComingSoonButton'
 
 export function WaterfallCalculator() {
   const [fund, setFund] = useState(MOCK_FUNDS[0]?.fundName ?? '')
@@ -114,8 +115,8 @@ export function WaterfallCalculator() {
 
             <p className="text-sm">GP Carry: <span className="text-accent-gold">{formatCurrency(result.gpCarry)}</span></p>
             <div className="flex flex-wrap gap-2">
-              <button className="rounded border border-bg-border px-3 py-2 text-sm">Export as Excel</button>
-              <button className="rounded border border-bg-border px-3 py-2 text-sm">Generate Distribution Notices</button>
+              <ComingSoonButton>Export as Excel (coming soon)</ComingSoonButton>
+              <ComingSoonButton>Generate Notices (coming soon)</ComingSoonButton>
             </div>
           </div>
         ) : (

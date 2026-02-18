@@ -24,9 +24,9 @@ export function MarketingFooter() {
         <div className="space-y-2">
           <h4 className="font-semibold text-text-primary">Legal</h4>
           <FooterLink href="/disclosures">Disclosures</FooterLink>
-          <FooterLink href="/">Privacy Policy</FooterLink>
-          <FooterLink href="/">Terms of Service</FooterLink>
-          <FooterLink href="/">Data Architecture</FooterLink>
+          <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
+          <FooterLink href="/terms-of-service">Terms of Service</FooterLink>
+          <FooterLink href="/data-architecture">Data Architecture</FooterLink>
         </div>
 
         <div className="space-y-3">
