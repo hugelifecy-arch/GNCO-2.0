@@ -31,6 +31,18 @@ const STATUS_OPTIONS: { label: string; value: StatusFilter }[] = [
   { label: 'Coming Soon', value: 'coming-soon' },
 ]
 
+const europeanJurisdictions = [
+  'luxembourg',
+  'ireland',
+  'jersey',
+  'guernsey',
+  'netherlands',
+  'united-kingdom',
+  'malta',
+  'switzerland',
+  'cyprus',
+]
+
 const formatRange = (min: number, max: number) => `$${Math.round(min / 1000)}K–$${Math.round(max / 1000)}K`
 
 const getCoverageLabel = (status: JurisdictionProfile['coverageStatus']) => {
@@ -55,7 +67,12 @@ export function CoveragePageClient() {
   const filteredJurisdictions = useMemo(() => {
     return JURISDICTIONS.filter((jurisdiction) => {
       const queryMatch = jurisdiction.name.toLowerCase().includes(query.trim().toLowerCase())
-      const regionMatch = region === 'all' || jurisdiction.region === region
+      const regionMatch =
+        region === 'all'
+          ? true
+          : region === 'europe'
+            ? europeanJurisdictions.includes(jurisdiction.id)
+            : jurisdiction.region === region
       const treatyMatch = treatyStrength === 'all' || jurisdiction.taxTreatyStrength === treatyStrength
       const statusMatch = status === 'all' || jurisdiction.coverageStatus === status
 

@@ -73,6 +73,60 @@ function applyBriefRules(base: JurisdictionScore, brief: ArchitectBrief, j: Juri
     score.taxEfficiency += 14
   }
 
+  if (j.id === 'cyprus') {
+    if (brief.lpProfile.includes('european')) {
+      score.taxEfficiency += 12
+      score.lpFamiliarity += 8
+    }
+
+    if (brief.lpProfile.includes('middle-eastern') || brief.lpProfile.includes('asian')) {
+      score.taxEfficiency += 10
+      score.lpFamiliarity += 6
+    }
+
+    if (brief.strategy === 'real-estate') {
+      score.taxEfficiency += 12
+      score.lpFamiliarity += 6
+    }
+
+    if (brief.priorities[0] === 'cost-of-formation' || brief.priorities[1] === 'cost-of-formation') {
+      score.costScore += 8
+    }
+
+    const EU_COUNTRIES = [
+      'Germany',
+      'France',
+      'Netherlands',
+      'Italy',
+      'Spain',
+      'Greece',
+      'Portugal',
+      'Ireland',
+      'Belgium',
+      'Austria',
+      'Luxembourg',
+      'Cyprus',
+    ]
+
+    if (EU_COUNTRIES.includes(brief.gpDomicile)) {
+      score.lpFamiliarity += 8
+      score.regulatorySimplicity += 4
+    }
+
+    if (brief.lpProfile.includes('us-taxable') && brief.lpProfile.length === 1) {
+      score.taxEfficiency -= 20
+      score.lpFamiliarity -= 8
+    }
+
+    if (brief.priorities[0] === 'speed-to-close') {
+      score.speedToClose -= 8
+    }
+
+    if (brief.experience === 'first-fund') {
+      score.regulatorySimplicity -= 5
+    }
+  }
+
   ;(Object.keys(score) as (keyof JurisdictionScore)[]).forEach((key) => {
     if (key !== 'overallScore') {
       score[key] = Math.min(100, Math.max(0, score[key]))
@@ -113,6 +167,24 @@ function buildConsiderations(brief: ArchitectBrief, j: JurisdictionProfile, scor
 
   if (brief.lpProfile.includes('middle-eastern') || brief.lpProfile.includes('sovereign-wealth')) {
     points.push('For GCC sovereign capital, confirm treaty routing and evaluate ADGM feeder alignment as a parallel option.')
+  }
+
+  if (j.id === 'cyprus') {
+    if (brief.lpProfile.includes('european')) {
+      points.push('Cyprus provides excellent EU treaty access for European LPs at lower average formation cost than Luxembourg.')
+    }
+
+    if (brief.lpProfile.includes('middle-eastern') || brief.lpProfile.includes('asian')) {
+      points.push('Cyprus strategic location and treaty network (UAE, Qatar, Russia, China) can improve tax efficiency for MENA/CIS and Asian investors.')
+    }
+
+    if (brief.lpProfile.includes('us-taxable') && brief.lpProfile.length === 1) {
+      points.push('WARNING: Cyprus has no tax treaty with the United States. For US LP-only funds, Delaware or Cayman are typically preferred.')
+    }
+
+    if (brief.experience === 'first-fund') {
+      points.push('Cyprus regulatory requirements and substance expectations can be heavier than Cayman/BVI for first-time managers.')
+    }
   }
 
   if (score.costScore < 55) {
