@@ -3,6 +3,7 @@ import { FundAllocationChart } from '@/components/dashboard/FundAllocationChart'
 import { KPIStrip } from '@/components/dashboard/KPIStrip'
 import { PerformanceChart } from '@/components/dashboard/PerformanceChart'
 import { RecentDocuments } from '@/components/dashboard/RecentDocuments'
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary'
 import {
   MOCK_CAPITAL_CALLS,
   MOCK_DOCUMENTS,
@@ -18,22 +19,32 @@ export default function DashboardPage() {
 
   return (
     <main className="space-y-6 p-6 lg:p-8">
-      <KPIStrip
-        totalAUM={MOCK_KPI_SUMMARY.totalAUM}
-        netIRR={MOCK_KPI_SUMMARY.netIRR}
-        unfundedCommitments={MOCK_KPI_SUMMARY.unfundedCommitments}
-        totalLPs={MOCK_KPI_SUMMARY.totalLPs}
-        activeFunds={MOCK_KPI_SUMMARY.activeFunds}
-      />
+      <ErrorBoundary>
+        <KPIStrip
+          totalAUM={MOCK_KPI_SUMMARY.totalAUM}
+          netIRR={MOCK_KPI_SUMMARY.netIRR}
+          unfundedCommitments={MOCK_KPI_SUMMARY.unfundedCommitments}
+          totalLPs={MOCK_KPI_SUMMARY.totalLPs}
+          activeFunds={MOCK_KPI_SUMMARY.activeFunds}
+        />
+      </ErrorBoundary>
 
-      <PerformanceChart data={MOCK_PERFORMANCE_DATA} />
+      <ErrorBoundary>
+        <PerformanceChart data={MOCK_PERFORMANCE_DATA} />
+      </ErrorBoundary>
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <CapitalActivityTable calls={MOCK_CAPITAL_CALLS} />
-        <FundAllocationChart funds={MOCK_FUNDS} />
+        <ErrorBoundary>
+          <CapitalActivityTable calls={MOCK_CAPITAL_CALLS} />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <FundAllocationChart funds={MOCK_FUNDS} />
+        </ErrorBoundary>
       </section>
 
-      <RecentDocuments documents={recentDocuments} />
+      <ErrorBoundary>
+        <RecentDocuments documents={recentDocuments} />
+      </ErrorBoundary>
     </main>
   )
 }
