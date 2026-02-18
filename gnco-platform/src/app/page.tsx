@@ -3,6 +3,7 @@
 import { HeroSection } from '@/components/landing/HeroSection'
 import { CredibilityStrip } from '@/components/landing/CredibilityStrip'
 import { FeatureCards } from '@/components/landing/FeatureCards'
+import { InstantCostCalculator } from '@/components/landing/InstantCostCalculator'
 import { HowItWorks } from '@/components/landing/HowItWorks'
 import { PartnerStrip } from '@/components/landing/PartnerStrip'
 import { RequestAccessCTA } from '@/components/landing/RequestAccessCTA'
@@ -14,6 +15,7 @@ export default function HomePage() {
       <main className="bg-bg-primary text-text-primary">
         <HeroSection />
         <CredibilityStrip />
+        <InstantCostCalculator />
         <FeatureCards />
         <PartnerStrip />
         <HowItWorks />
