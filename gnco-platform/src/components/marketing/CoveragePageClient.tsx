@@ -1,9 +1,12 @@
 'use client'
 
+import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { CheckCircle2, X } from 'lucide-react'
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 import type { JurisdictionProfile } from '@/lib/types'
+import { JURISDICTION_METADATA } from '@/lib/jurisdiction-metadata'
+import { GLOBAL_LAST_UPDATED } from '@/lib/data-sources'
 
 type RegionFilter = 'all' | JurisdictionProfile['region']
 type TreatyFilter = 'all' | JurisdictionProfile['taxTreatyStrength']
@@ -91,10 +94,13 @@ export function CoveragePageClient() {
           </p>
         </section>
 
-        <section className="grid gap-4 rounded-xl border border-bg-border bg-bg-surface p-4 text-center sm:grid-cols-3">
+        <section className="space-y-2">
+          <div className="grid gap-4 rounded-xl border border-bg-border bg-bg-surface p-4 text-center sm:grid-cols-3">
           <StatCell value="15" label="Jurisdictions" />
           <StatCell value="52" label="Vehicle Types" />
           <StatCell value="200+" label="Tax Treaties Mapped" />
+          </div>
+          <p className="text-xs text-text-tertiary">Last updated: {GLOBAL_LAST_UPDATED} • Sources available on each jurisdiction detail page.</p>
         </section>
 
         <section className="space-y-4 rounded-xl border border-bg-border bg-bg-surface p-4">
@@ -163,13 +169,18 @@ export function CoveragePageClient() {
                   <span className="text-text-primary">Best for:</span> {jurisdiction.bestFor[0]}
                 </p>
 
-                <button
-                  type="button"
-                  onClick={() => setSelectedJurisdiction(jurisdiction)}
-                  className="mt-auto self-end text-sm font-medium text-accent-gold transition hover:text-accent-gold-light"
-                >
-                  Details →
-                </button>
+                <div className="mt-auto flex items-center justify-end gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedJurisdiction(jurisdiction)}
+                    className="text-sm font-medium text-accent-gold transition hover:text-accent-gold-light"
+                  >
+                    Quick View
+                  </button>
+                  <Link href={`/coverage/${jurisdiction.id}`} className="text-sm font-medium text-accent-gold transition hover:text-accent-gold-light">
+                    Details →
+                  </Link>
+                </div>
               </article>
             )
           })}
@@ -293,10 +304,34 @@ function JurisdictionDrawer({
               <h4 className="mb-1 text-sm font-semibold uppercase tracking-wide text-text-secondary">Notes</h4>
               <p className="text-sm text-text-secondary">{profile.notes}</p>
             </section>
+
+            <SourcesList jurisdictionId={profile.id} />
           </div>
         )}
       </aside>
     </>
+  )
+}
+
+
+
+function SourcesList({ jurisdictionId }: { jurisdictionId: string }) {
+  const metadata = JURISDICTION_METADATA[jurisdictionId]
+
+  if (!metadata) return null
+
+  return (
+    <section className="rounded-md border border-bg-border bg-bg-elevated p-4">
+      <h4 className="text-sm font-semibold uppercase tracking-wide text-text-secondary">Sources</h4>
+      <p className="mt-1 text-xs text-text-tertiary">Last updated: {metadata.lastUpdated}</p>
+      <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-text-secondary">
+        {metadata.sources.map((source) => (
+          <li key={source.href}>
+            <a href={source.href} target="_blank" rel="noreferrer" className="text-accent-gold">{source.label}</a>
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
 
