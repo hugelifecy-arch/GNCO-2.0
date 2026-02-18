@@ -5,10 +5,13 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   ArrowUpDown,
+  Brain,
   Cpu,
   FileText,
   FolderOpen,
   LayoutDashboard,
+  Radar,
+  ShieldAlert,
   Settings,
   TrendingUp,
   Users,
@@ -46,8 +49,16 @@ const navSections: NavSection[] = [
     ],
   },
   {
+    title: 'Module 3 — Intelligence',
+    items: [
+      { label: 'Ask GNCO', href: '/intelligence', icon: Brain },
+      { label: 'Regulatory Radar', href: '/intelligence/radar', icon: Radar },
+      { label: 'Scenario Stress Tester', href: '/intelligence/scenarios', icon: ShieldAlert },
+    ],
+  },
+  {
     title: 'Reports',
-    items: [{ label: 'Generate Reports', href: '/reports', icon: FileText }],
+    items: [{ label: 'ILPA Report Generator', href: '/reports', icon: FileText }],
   },
 ]
 
