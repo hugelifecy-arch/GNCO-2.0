@@ -16,7 +16,7 @@ const features = [
   },
   {
     title: 'GNCO Architect Engine',
-    body: 'Input your LP mix, GP domicile, fund size, and priorities. The Engine scores all 15 jurisdictions, recommends the optimal vehicle, models effective LP tax rates, and generates your pre-legal structuring brief.',
+    body: 'Input your LP mix, GP domicile, fund size, and priorities. The Engine scores all 15 jurisdictions across 6 weighted criteria, models tax impact for up to 50 LPs, and generates your attorney brief in under 30 seconds.',
     footer: '→ Try the Architect',
     href: '/architect',
     icon: Cpu,

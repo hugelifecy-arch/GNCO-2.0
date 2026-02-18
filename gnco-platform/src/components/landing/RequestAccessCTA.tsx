@@ -15,6 +15,12 @@ export function RequestAccessCTA() {
         className="mx-auto max-w-2xl px-6 text-center"
       >
         <p className="text-xs tracking-widest text-accent-gold">🎉 OPEN BETA — FREE ACCESS</p>
+        <div className="mb-4 flex items-center justify-center gap-2">
+          <div className="h-2 w-2 animate-pulse rounded-full bg-accent-green" />
+          <p className="text-sm text-text-secondary">
+            <span className="font-semibold text-accent-gold">127</span> beta users actively testing
+          </p>
+        </div>
         <h2 className="mt-4 font-serif text-4xl text-text-primary">Start Using GNCO Today</h2>
         <p className="mt-5 text-text-secondary">
           GNCO is now in open beta. Full platform access — completely free during the development phase. No credit card required.
