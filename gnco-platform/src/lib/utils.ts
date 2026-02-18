@@ -8,12 +8,12 @@ export function cn(...inputs: ClassValue[]) {
 export function formatCurrency(
   amount: number,
   compact = false,
-  currency = 'USD'
+  currency = 'EUR'
 ): string {
   if (compact) {
-    if (amount >= 1_000_000_000) return `$${(amount / 1_000_000_000).toFixed(1)}B`
-    if (amount >= 1_000_000) return `$${(amount / 1_000_000).toFixed(1)}M`
-    if (amount >= 1_000) return `$${(amount / 1_000).toFixed(0)}K`
+    if (amount >= 1_000_000_000) return `€${(amount / 1_000_000_000).toFixed(1)}B`
+    if (amount >= 1_000_000) return `€${(amount / 1_000_000).toFixed(1)}M`
+    if (amount >= 1_000) return `€${(amount / 1_000).toFixed(0)}K`
   }
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
