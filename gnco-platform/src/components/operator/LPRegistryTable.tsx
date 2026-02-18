@@ -1,7 +1,9 @@
 'use client'
 
+import { Building2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
+import { EmptyState } from '@/components/shared/EmptyState'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import type { LPEntry } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils'
@@ -108,6 +110,17 @@ export function LPRegistryTable({ data, search, filters }: LPRegistryTableProps)
             </tr>
           </thead>
           <tbody>
+            {rows.length === 0 ? (
+              <tr>
+                <td colSpan={9} className="p-4">
+                  <EmptyState
+                    icon={Building2}
+                    message="No LPs onboarded yet. Import from Excel or add manually."
+                    actionLabel="Add LP"
+                  />
+                </td>
+              </tr>
+            ) : null}
             {rows.map((lp) => {
               const calledPct = Math.min(100, (lp.calledCapital / lp.commitmentAmount) * 100)
               return (

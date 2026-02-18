@@ -17,12 +17,13 @@ import {
   RefreshCw,
   TrendingUp,
 } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import { useMemo, useState } from 'react'
 
 import { useWizard } from '@/hooks/useWizard'
 import type { ArchitectBrief, FundSize, FundStrategy, LPProfile, Priority } from '@/lib/types'
 import { cn } from '@/lib/utils'
-import { RecommendationPanel } from './RecommendationPanel'
+const RecommendationPanel = dynamic(() => import('./RecommendationPanel').then((mod) => mod.RecommendationPanel))
 
 const stepLabels = [
   'Fund Type',

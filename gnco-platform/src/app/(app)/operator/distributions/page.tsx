@@ -1,4 +1,6 @@
-import { WaterfallCalculator } from '@/components/operator/WaterfallCalculator'
+import dynamic from 'next/dynamic'
+
+const WaterfallCalculator = dynamic(() => import('@/components/operator/WaterfallCalculator').then((mod) => mod.WaterfallCalculator))
 
 export default function DistributionsPage() {
   return (
