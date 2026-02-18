@@ -2,7 +2,11 @@
 
 import { Calendar, CheckCircle, FileText, Users } from 'lucide-react'
 
-export function BookCallCTA() {
+interface BookCallCTAProps {
+  onBookCallClick?: () => void
+}
+
+export function BookCallCTA({ onBookCallClick }: BookCallCTAProps) {
   return (
     <div className="mt-12 rounded-lg border border-accent-gold/30 bg-bg-elevated p-8">
       <div className="flex items-start gap-6">
@@ -46,6 +50,7 @@ export function BookCallCTA() {
           <div className="flex items-center gap-4">
             <a
               href="https://calendly.com/gnco/strategy-call"
+              onClick={onBookCallClick}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-sm bg-accent-gold px-6 py-3 font-semibold text-bg-primary transition-all hover:bg-accent-gold-light"

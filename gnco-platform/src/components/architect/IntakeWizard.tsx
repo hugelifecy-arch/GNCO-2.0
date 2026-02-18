@@ -18,10 +18,11 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import dynamic from 'next/dynamic'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useWizard } from '@/hooks/useWizard'
 import type { ArchitectBrief, FundSize, FundStrategy, LPProfile, Priority } from '@/lib/types'
+import { trackEvent } from '@/lib/analytics'
 import { cn } from '@/lib/utils'
 const RecommendationPanel = dynamic(() => import('./RecommendationPanel').then((mod) => mod.RecommendationPanel))
 
@@ -118,6 +119,40 @@ export function IntakeWizard() {
   }, [brief, currentStep, priorities])
 
   const filteredCountries = countries.filter((country) => country.toLowerCase().includes(countrySearch.toLowerCase()))
+
+
+  const hasTrackedCompletion = useRef(false)
+
+  useEffect(() => {
+    if (currentStep === 9 && !hasTrackedCompletion.current) {
+      hasTrackedCompletion.current = true
+      trackEvent('architect_wizard_completed', {
+        strategy: brief.strategy,
+        fundSize: brief.fundSize,
+        lpProfile: brief.lpProfile,
+        priorities: brief.priorities,
+        experience: brief.experience,
+      })
+    }
+
+    if (currentStep < 9) {
+      hasTrackedCompletion.current = false
+    }
+  }, [brief.experience, brief.fundSize, brief.lpProfile, brief.priorities, brief.strategy, currentStep])
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (currentStep < 8) {
+        trackEvent('architect_wizard_abandoned', {
+          lastStep: currentStep,
+          briefData: JSON.stringify(briefData),
+        })
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [briefData, currentStep])
 
   const toggleMulti = <T extends string,>(key: keyof ArchitectBrief, value: T) => {
     const current = (brief[key] as T[] | undefined) ?? []
