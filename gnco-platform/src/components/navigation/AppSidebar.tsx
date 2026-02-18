@@ -15,6 +15,7 @@ import {
   Settings,
   TrendingUp,
   Users,
+  Handshake,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -58,7 +59,10 @@ const navSections: NavSection[] = [
   },
   {
     title: 'Reports',
-    items: [{ label: 'ILPA Report Generator', href: '/reports', icon: FileText }],
+    items: [
+      { label: 'ILPA Report Generator', href: '/reports', icon: FileText },
+      { label: 'Marketplace', href: '/marketplace', icon: Handshake },
+    ],
   },
 ]
 
