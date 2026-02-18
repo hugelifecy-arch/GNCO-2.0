@@ -25,6 +25,7 @@
     "framer-motion": "^12.4.2",
     "lucide-react": "^0.474.0",
     "next": "14.2.25",
+    "posthog-js": "^1.246.0",
     "prisma": "^6.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

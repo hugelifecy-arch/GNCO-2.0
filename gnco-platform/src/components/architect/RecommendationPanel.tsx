@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { generateRecommendations } from '@/lib/architect-logic'
 import { exportArchitectResults } from '@/lib/excel-export'
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
+import { trackEvent } from '@/lib/analytics'
 import type { ArchitectBrief, FundStructureRecommendation } from '@/lib/types'
 import { cn, formatCurrency } from '@/lib/utils'
 
@@ -170,12 +171,40 @@ export function RecommendationPanel({ brief, onStartNew }: RecommendationPanelPr
     return Math.round(100 - weightedTax / totalCommitment)
   }, [primary, taxRows])
 
+  const handleJurisdictionSelected = (jurisdiction: string) => {
+    trackEvent('jurisdiction_selected', {
+      jurisdiction,
+      rank: recommendations.findIndex((rec) => rec.jurisdiction === jurisdiction) + 1,
+      allRecommendations: recommendations.map((rec) => rec.jurisdiction),
+    })
+  }
+
   const swapPrimary = (rank: 2 | 3) => {
     const idx = recommendations.findIndex((rec) => rec.rank === rank)
     if (idx < 0) return
+    const selected = recommendations[idx]
+
+    if (selected) {
+      handleJurisdictionSelected(selected.jurisdiction)
+    }
+
     const next = [...recommendations]
     ;[next[0], next[idx]] = [next[idx], next[0]]
     setRecommendations(next.map((item, i) => ({ ...item, rank: (i + 1) as 1 | 2 | 3 })))
+  }
+
+  const handleExcelExport = () => {
+    exportArchitectResults(recommendations, brief)
+    trackEvent('excel_exported', {
+      topJurisdiction: recommendations[0]?.jurisdiction,
+      recommendationCount: recommendations.length,
+    })
+  }
+
+  const handleBookCall = () => {
+    trackEvent('strategy_call_clicked', {
+      topJurisdiction: recommendations[0]?.jurisdiction,
+    })
   }
 
   const exportPdf = () => {
@@ -244,7 +273,7 @@ export function RecommendationPanel({ brief, onStartNew }: RecommendationPanelPr
 
       <div className="mt-8 flex flex-wrap items-center gap-4">
         <button
-          onClick={() => exportArchitectResults(recommendations, brief)}
+          onClick={handleExcelExport}
           className="flex items-center gap-2 rounded-sm bg-accent-gold px-6 py-3 font-semibold text-bg-primary transition-all hover:bg-accent-gold-light"
         >
           <Download className="h-4 w-4" />
@@ -262,7 +291,7 @@ export function RecommendationPanel({ brief, onStartNew }: RecommendationPanelPr
         <ShareResultsButton results={sharePayload} />
       </div>
 
-      <BookCallCTA />
+      <BookCallCTA onBookCallClick={handleBookCall} />
 
       <section className="rounded-xl border border-bg-border bg-bg-surface p-6">
         <div className="mb-4 flex items-center justify-between">
@@ -298,7 +327,7 @@ export function RecommendationPanel({ brief, onStartNew }: RecommendationPanelPr
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-lg font-semibold">PRE-LEGAL STRUCTURING BRIEF</h3>
           <div className="flex gap-2">
-            <button onClick={() => exportArchitectResults(recommendations, brief)} className="inline-flex items-center gap-1 rounded-md border border-bg-border px-3 py-2 text-sm"><Download className="h-4 w-4" />Download Excel</button>
+            <button onClick={handleExcelExport} className="inline-flex items-center gap-1 rounded-md border border-bg-border px-3 py-2 text-sm"><Download className="h-4 w-4" />Download Excel</button>
             <button onClick={exportPdf} className="inline-flex items-center gap-1 rounded-md border border-bg-border px-3 py-2 text-sm"><Download className="h-4 w-4" />PDF</button>
           </div>
         </div>
@@ -313,7 +342,7 @@ export function RecommendationPanel({ brief, onStartNew }: RecommendationPanelPr
       </section>
 
       <div className="flex flex-wrap gap-3">
-        <button onClick={() => exportArchitectResults(recommendations, brief)} className="rounded-md border border-accent-gold px-4 py-2 text-sm text-accent-gold">Download as Excel</button>
+        <button onClick={handleExcelExport} className="rounded-md border border-accent-gold px-4 py-2 text-sm text-accent-gold">Download as Excel</button>
         <button onClick={exportPdf} className="rounded-md border border-accent-gold px-4 py-2 text-sm text-accent-gold">Download as PDF</button>
         <button onClick={onStartNew} className="inline-flex items-center gap-2 rounded-md border border-bg-border px-4 py-2 text-sm"><RotateCcw className="h-4 w-4" />Start New Analysis</button>
       </div>

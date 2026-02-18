@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
+import { trackEvent } from '@/lib/analytics'
 import { formatCurrency } from '@/lib/utils'
 
 type FundStrategy =
@@ -14,6 +15,33 @@ export function InstantCostCalculator() {
   const [fundSize, setFundSize] = useState(100)
   const [lpCount, setLpCount] = useState(15)
   const [strategy, setStrategy] = useState<FundStrategy>('private-equity')
+
+  const handleFundSizeChange = (value: number) => {
+    setFundSize(value)
+    trackEvent('calculator_fund_size_changed', {
+      fundSize: value,
+      lpCount,
+      strategy,
+    })
+  }
+
+  const handleLpCountChange = (value: number) => {
+    setLpCount(value)
+    trackEvent('calculator_lp_count_changed', {
+      lpCount: value,
+      fundSize,
+      strategy,
+    })
+  }
+
+  const handleStrategyChange = (value: FundStrategy) => {
+    setStrategy(value)
+    trackEvent('calculator_strategy_changed', {
+      strategy: value,
+      fundSize,
+      lpCount,
+    })
+  }
 
   const topJurisdictions = useMemo(() => {
     const scored = JURISDICTIONS.map((j) => {
@@ -88,7 +116,7 @@ export function InstantCostCalculator() {
                 max="500"
                 step="10"
                 value={fundSize}
-                onChange={(e) => setFundSize(Number(e.target.value))}
+                onChange={(e) => handleFundSizeChange(Number(e.target.value))}
                 className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-bg-border accent-accent-gold"
               />
               <div className="mt-1 flex justify-between text-xs text-text-tertiary">
@@ -110,7 +138,7 @@ export function InstantCostCalculator() {
                 max="50"
                 step="5"
                 value={lpCount}
-                onChange={(e) => setLpCount(Number(e.target.value))}
+                onChange={(e) => handleLpCountChange(Number(e.target.value))}
                 className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-bg-border accent-accent-gold"
               />
               <div className="mt-1 flex justify-between text-xs text-text-tertiary">
@@ -126,7 +154,7 @@ export function InstantCostCalculator() {
             </label>
             <select
               value={strategy}
-              onChange={(e) => setStrategy(e.target.value as FundStrategy)}
+              onChange={(e) => handleStrategyChange(e.target.value as FundStrategy)}
               className="w-full rounded-sm border border-bg-border bg-bg-primary px-4 py-3 text-text-primary focus:border-accent-gold focus:outline-none"
             >
               <option value="private-equity">Private Equity</option>
