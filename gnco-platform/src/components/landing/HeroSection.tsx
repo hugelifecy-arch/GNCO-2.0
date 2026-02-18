@@ -5,9 +5,6 @@ import { motion } from 'framer-motion'
 import { useRef } from 'react'
 import { useCountUp } from '@/hooks/useCountUp'
 
-interface HeroSectionProps {
-  onRequestAccess: () => void
-}
 
 const headlineWords = "Architect the World's Most Sophisticated Fund Structures.".split(' ')
 
@@ -22,7 +19,7 @@ function StatItem({ value, label, statRef }: { value: number; label: string; sta
   )
 }
 
-export function HeroSection({ onRequestAccess }: HeroSectionProps) {
+export function HeroSection() {
   const statsRef = useRef<HTMLDivElement>(null)
 
   return (
@@ -85,13 +82,12 @@ export function HeroSection({ onRequestAccess }: HeroSectionProps) {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row"
         >
-          <button
-            type="button"
-            onClick={onRequestAccess}
+          <Link
+            href="/architect"
             className="w-full rounded-sm bg-accent-gold px-8 py-4 font-semibold text-bg-primary transition hover:bg-accent-gold-light sm:w-auto"
           >
-            Apply for Early Access
-          </button>
+            Start Free Trial →
+          </Link>
           <Link
             href="/methodology"
             className="w-full rounded-sm border border-accent-gold/40 px-8 py-4 text-accent-gold transition hover:bg-accent-gold/5 sm:w-auto"
@@ -106,7 +102,7 @@ export function HeroSection({ onRequestAccess }: HeroSectionProps) {
           transition={{ duration: 0.5, delay: 0.6 }}
           className="mt-4 text-xs text-text-tertiary"
         >
-          Reviewed by family offices across 14 jurisdictions. Access available by application.
+          Currently in Open Beta — Free access for all users. No credit card required.
         </motion.p>
 
         <motion.div
