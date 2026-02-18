@@ -69,14 +69,14 @@ export function CoveragePageClient() {
         <section className="space-y-4">
           <h1 className="text-3xl font-semibold tracking-tight sm:text-5xl">15 Jurisdictions. One Platform.</h1>
           <p className="max-w-4xl text-base text-text-secondary sm:text-lg">
-            GNCO covers the world&apos;s primary fund domiciles with deep operational intelligence — real costs, real
+            GNCO covers 15 of the world&apos;s primary fund domiciles with deep operational intelligence — real costs, real
             timelines, real service provider data.
           </p>
         </section>
 
         <section className="grid gap-4 rounded-xl border border-bg-border bg-bg-surface p-4 text-center sm:grid-cols-3">
           <StatCell value="15" label="Jurisdictions" />
-          <StatCell value="47" label="Vehicle Types" />
+          <StatCell value="52" label="Vehicle Types" />
           <StatCell value="200+" label="Tax Treaties Mapped" />
         </section>
 

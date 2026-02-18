@@ -112,8 +112,8 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.7 }}
           className="mx-auto mt-16 flex max-w-3xl flex-col divide-y divide-bg-border border border-bg-border bg-bg-surface/50 sm:flex-row sm:divide-x sm:divide-y-0"
         >
-          <StatItem value={14} label="Jurisdictions Covered" statRef={statsRef} />
-          <StatItem value={47} label="Templates Available" statRef={statsRef} />
+          <StatItem value={15} label="Jurisdictions Covered" statRef={statsRef} />
+          <StatItem value={52} label="Templates Available" statRef={statsRef} />
           <div className="flex-1 py-6 text-center">
             <p className="font-serif text-3xl text-accent-gold">ILPA-Aligned</p>
             <p className="mt-1 text-sm text-text-secondary">Reporting Standard</p>
