@@ -216,7 +216,11 @@ function createZip(files: { name: string; content: string }[]): Blob {
     uint16(0),
   ])
 
-  return new Blob([...localParts, ...centralParts, endRecord], {
+  const archive = concatBytes([...localParts, ...centralParts, endRecord])
+  const buffer = new ArrayBuffer(archive.byteLength)
+  new Uint8Array(buffer).set(archive)
+
+  return new Blob([buffer], {
     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   })
 }
