@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react'
 import { DemoDataToggle } from '@/components/DemoDataToggle'
 import { DemoDatasetBadge } from '@/components/DemoDatasetBadge'
 import { LPRegistryTable } from '@/components/operator/LPRegistryTable'
+import { ComingSoonButton } from '@/components/shared/ComingSoonButton'
 import { useDemoMode } from '@/hooks/useDemoMode'
 import { MOCK_LPS } from '@/lib/mock-data'
 
@@ -36,12 +37,12 @@ export default function LPRegistryPage() {
 
         <div className="flex flex-wrap items-center gap-2">
           <DemoDataToggle mode={mode} onChange={setMode} />
-          <button className="rounded border border-bg-border px-4 py-2 text-sm">
-            Export CSV (Demo)
-          </button>
-          <button className="rounded border border-accent-gold/40 bg-accent-gold/10 px-4 py-2 text-sm text-accent-gold">
-            + Add LP (Demo)
-          </button>
+          <ComingSoonButton className="rounded border border-bg-border px-4 py-2 text-sm">
+            Export CSV (coming soon)
+          </ComingSoonButton>
+          <ComingSoonButton className="rounded border border-accent-gold/40 bg-accent-gold/10 px-4 py-2 text-sm text-accent-gold">
+            + Add LP (coming soon)
+          </ComingSoonButton>
         </div>
       </header>
 

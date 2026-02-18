@@ -26,7 +26,7 @@ export function MarketingFooter() {
           <FooterLink href="/disclosures">Disclosures</FooterLink>
           <FooterLink href="/privacy">Privacy Policy</FooterLink>
           <FooterLink href="/terms">Terms of Service</FooterLink>
-          <FooterLink href="/data-architecture">Data Architecture</FooterLink>
+          <FooterLink href="/data-processing">Data Processing</FooterLink>
           <FooterLink href="/dpa">Data Processing Addendum (DPA)</FooterLink>
         </div>
 
