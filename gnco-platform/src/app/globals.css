@@ -75,3 +75,15 @@ body {
 .glow-blue {
   box-shadow: 0 0 24px rgba(59, 130, 246, 0.15);
 }
+
+@media print {
+  .disclosures-print-root {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  @page {
+    size: auto;
+    margin: 0.75in;
+  }
+}
