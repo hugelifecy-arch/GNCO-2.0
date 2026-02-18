@@ -17,15 +17,13 @@ import {
   RefreshCw,
   TrendingUp,
 } from 'lucide-react'
-import dynamic from 'next/dynamic'
+import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useWizard } from '@/hooks/useWizard'
 import type { ArchitectBrief, FundSize, FundStrategy, LPProfile, Priority } from '@/lib/types'
 import { trackEvent } from '@/lib/analytics'
 import { cn } from '@/lib/utils'
-const RecommendationPanel = dynamic(() => import('./RecommendationPanel').then((mod) => mod.RecommendationPanel))
-
 const stepLabels = [
   'Fund Type',
   'Fund Size',
@@ -87,7 +85,8 @@ function stepNumber(step: number) {
 }
 
 export function IntakeWizard() {
-  const { currentStep, goBack, goNext, updateBrief, briefData, resetWizard } = useWizard({ totalSteps: 9 })
+  const router = useRouter()
+  const { currentStep, goBack, goNext, updateBrief, briefData } = useWizard({ totalSteps: 9 })
   const [direction, setDirection] = useState(1)
   const [countrySearch, setCountrySearch] = useState('')
   const [countryOpen, setCountryOpen] = useState(false)
@@ -179,15 +178,18 @@ export function IntakeWizard() {
     goBack()
   }
 
+  useEffect(() => {
+    if (currentStep === 9) {
+      router.push('/architect/results')
+    }
+  }, [currentStep, router])
+
   if (currentStep === 9) {
     return (
-      <RecommendationPanel
-        brief={brief as ArchitectBrief}
-        onStartNew={() => {
-          resetWizard()
-          setDirection(-1)
-        }}
-      />
+      <div className="flex min-h-[76vh] flex-col items-center justify-center rounded-xl border border-bg-border bg-bg-surface p-10">
+        <Loader2 className="h-12 w-12 animate-spin text-accent-gold" />
+        <p className="mt-4 text-lg">Preparing your results...</p>
+      </div>
     )
   }
 
