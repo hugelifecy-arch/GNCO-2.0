@@ -2,7 +2,7 @@
 
 import { format } from 'date-fns'
 import { motion } from 'framer-motion'
-import { Building2, Download, FileDown, Loader2, Plus, RotateCcw, Star } from 'lucide-react'
+import { Building2, Check, Copy, Download, FileDown, Loader2, Plus, RotateCcw, Share2, Star } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 
 import { generateRecommendations } from '@/lib/architect-logic'
@@ -50,6 +50,88 @@ function generateSimplePdf(filename: string, lines: string[]) {
   URL.revokeObjectURL(url)
 }
 
+
+interface ShareResultsButtonProps {
+  results: Record<string, unknown>
+}
+
+export function ShareResultsButton({ results }: ShareResultsButtonProps) {
+  const [isSharing, setIsSharing] = useState(false)
+  const [shareUrl, setShareUrl] = useState('')
+  const [copied, setCopied] = useState(false)
+
+  async function handleShare() {
+    setIsSharing(true)
+
+    try {
+      const response = await fetch('/api/architect/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(results),
+      })
+      const data = (await response.json()) as { success?: boolean; shareUrl?: string }
+
+      if (data.success && data.shareUrl) {
+        setShareUrl(data.shareUrl)
+      }
+    } catch (error) {
+      console.error('Failed to generate share link:', error)
+    } finally {
+      setIsSharing(false)
+    }
+  }
+
+  async function copyToClipboard() {
+    await navigator.clipboard.writeText(shareUrl)
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <div className="mt-8 border-t border-bg-border pt-6">
+      {!shareUrl ? (
+        <button
+          onClick={handleShare}
+          disabled={isSharing}
+          className="flex items-center gap-2 rounded-sm border border-accent-gold/30 bg-bg-elevated px-6 py-3 text-accent-gold transition-all hover:bg-accent-gold/5 disabled:opacity-50"
+        >
+          <Share2 className="h-4 w-4" />
+          {isSharing ? 'Generating link...' : 'Share Results with Team'}
+        </button>
+      ) : (
+        <div className="space-y-3">
+          <p className="text-sm text-text-secondary">Share this link with your co-founders, legal counsel, or team:</p>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={shareUrl}
+              readOnly
+              className="flex-1 rounded-sm border border-bg-border bg-bg-surface px-4 py-2 text-sm text-text-primary focus:outline-none"
+            />
+            <button
+              onClick={copyToClipboard}
+              className="flex items-center gap-2 rounded-sm bg-accent-gold px-4 py-2 text-bg-primary transition-all hover:bg-accent-gold-light"
+            >
+              {copied ? (
+                <>
+                  <Check className="h-4 w-4" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4" />
+                  Copy
+                </>
+              )}
+            </button>
+          </div>
+          <p className="text-xs text-text-tertiary">Anyone with this link can view your results (read-only)</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function RecommendationPanel({ brief, onStartNew }: RecommendationPanelProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [recommendations, setRecommendations] = useState<FundStructureRecommendation[]>([])
@@ -65,6 +147,14 @@ export function RecommendationPanel({ brief, onStartNew }: RecommendationPanelPr
 
   const primary = recommendations[0]
   const alternatives = recommendations.slice(1)
+
+  const sharePayload = useMemo(() => ({
+    brief,
+    recommendations,
+    primary,
+    alternatives,
+    taxRows,
+  }), [alternatives, brief, primary, recommendations, taxRows])
 
   const blendedScore = useMemo(() => {
     if (!primary || taxRows.length === 0) return 0
@@ -172,6 +262,8 @@ export function RecommendationPanel({ brief, onStartNew }: RecommendationPanelPr
           </article>
         ))}
       </section>
+
+      <ShareResultsButton results={sharePayload} />
 
       <section className="rounded-xl border border-bg-border bg-bg-surface p-6">
         <div className="mb-4 flex items-center justify-between">
