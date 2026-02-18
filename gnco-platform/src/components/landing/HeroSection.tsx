@@ -73,7 +73,7 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mx-auto mt-6 max-w-3xl text-lg text-text-secondary md:text-xl"
         >
-          GNCO gives family offices, GPs, and fund architects the intelligence layer to model, compare, and execute globally optimized fund structures — from jurisdiction selection to LP onboarding.
+          GNCO eliminates 6 weeks and €50,000+ in legal fees by modeling your optimal fund structure before you call counsel. Make jurisdiction decisions in hours, not months.
         </motion.p>
 
         <motion.div
