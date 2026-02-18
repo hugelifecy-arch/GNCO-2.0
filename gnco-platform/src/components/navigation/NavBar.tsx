@@ -7,7 +7,6 @@ import { usePathname } from 'next/navigation'
 import { useScrollPosition } from '@/hooks/useScrollPosition'
 import { cn } from '@/lib/utils'
 import { MobileNav } from '@/components/navigation/MobileNav'
-import { RequestAccessModal } from '@/components/shared/RequestAccessModal'
 
 const navLinks = [
   { label: 'Platform', href: '/' },
@@ -20,7 +19,6 @@ export function NavBar() {
   const pathname = usePathname()
   const scrollY = useScrollPosition()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [requestAccessOpen, setRequestAccessOpen] = useState(false)
 
   return (
     <>
@@ -34,6 +32,9 @@ export function NavBar() {
           <Link href="/" className="flex items-center gap-2">
             <span className="text-base leading-none text-accent-gold">◆</span>
             <span className="font-serif text-[20px] font-bold text-accent-gold">GNCO</span>
+            <span className="rounded-full border border-accent-gold/30 bg-accent-gold/10 px-2 py-0.5 font-sans text-[10px] font-medium tracking-wider text-accent-gold">
+              BETA
+            </span>
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">
@@ -58,19 +59,18 @@ export function NavBar() {
           </nav>
 
           <div className="hidden items-center gap-2 md:flex">
-            <button
-              type="button"
+            <Link
+              href="/signin"
               className="rounded-sm border border-bg-border px-4 py-2 text-sm text-text-secondary transition hover:border-accent-gold/50 hover:text-text-primary"
             >
               Sign In
-            </button>
-            <button
-              type="button"
-              onClick={() => setRequestAccessOpen(true)}
+            </Link>
+            <Link
+              href="/architect"
               className="rounded-sm bg-accent-gold px-5 py-2 text-sm font-semibold text-bg-primary transition hover:bg-accent-gold-light"
             >
-              Request Access
-            </button>
+              Start Free →
+            </Link>
           </div>
 
           <button
@@ -84,16 +84,7 @@ export function NavBar() {
         </div>
       </header>
 
-      <MobileNav
-        open={mobileOpen}
-        onOpenChange={setMobileOpen}
-        navLinks={navLinks}
-        onRequestAccess={() => {
-          setMobileOpen(false)
-          setRequestAccessOpen(true)
-        }}
-      />
-      <RequestAccessModal open={requestAccessOpen} onOpenChange={setRequestAccessOpen} />
+      <MobileNav open={mobileOpen} onOpenChange={setMobileOpen} navLinks={navLinks} />
     </>
   )
 }

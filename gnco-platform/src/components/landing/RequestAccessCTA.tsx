@@ -2,11 +2,9 @@
 
 import { motion } from 'framer-motion'
 
-interface RequestAccessCTAProps {
-  onRequestAccess: () => void
-}
+import Link from 'next/link'
 
-export function RequestAccessCTA({ onRequestAccess }: RequestAccessCTAProps) {
+export function RequestAccessCTA() {
   return (
     <section className="border-y border-bg-border bg-bg-elevated py-24">
       <motion.div
@@ -16,23 +14,22 @@ export function RequestAccessCTA({ onRequestAccess }: RequestAccessCTAProps) {
         transition={{ duration: 0.5 }}
         className="mx-auto max-w-2xl px-6 text-center"
       >
-        <p className="text-xs tracking-widest text-accent-gold">LIMITED EARLY ACCESS</p>
-        <h2 className="mt-4 font-serif text-4xl text-text-primary">Join the Due Diligence Program</h2>
+        <p className="text-xs tracking-widest text-accent-gold">🎉 OPEN BETA — FREE ACCESS</p>
+        <h2 className="mt-4 font-serif text-4xl text-text-primary">Start Using GNCO Today</h2>
         <p className="mt-5 text-text-secondary">
-          GNCO is currently available to a select group of family offices and fund managers. Applications are reviewed individually.
-          Pricing starts at €11,000/year — less than 2 hours of structuring counsel.
+          GNCO is now in open beta. Full platform access — completely free during the development phase. No credit card required.
+          Start modeling fund structures in minutes.
         </p>
 
-        <button
-          type="button"
-          onClick={onRequestAccess}
-          className="mt-8 rounded-sm bg-accent-gold px-10 py-4 text-lg font-semibold text-bg-primary transition hover:bg-accent-gold-light"
+        <Link
+          href="/architect"
+          className="mt-8 inline-block rounded-sm bg-accent-gold px-10 py-4 text-lg font-semibold text-bg-primary transition hover:bg-accent-gold-light"
         >
-          Apply for Access
-        </button>
+          Launch Architect Engine →
+        </Link>
 
         <p className="mt-4 text-xs text-text-tertiary">
-          We respond to all applications within 48 hours. No spam. No automatic sign-ups. Every access is reviewed.
+          Beta users get free lifetime access to core features when we launch paid plans in Q3 2026. Your feedback shapes the product.
         </p>
       </motion.div>
     </section>

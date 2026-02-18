@@ -8,10 +8,9 @@ interface MobileNavProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   navLinks: Array<{ label: string; href: string }>
-  onRequestAccess: () => void
 }
 
-export function MobileNav({ open, onOpenChange, navLinks, onRequestAccess }: MobileNavProps) {
+export function MobileNav({ open, onOpenChange, navLinks }: MobileNavProps) {
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
@@ -44,20 +43,21 @@ export function MobileNav({ open, onOpenChange, navLinks, onRequestAccess }: Mob
           </nav>
 
           <div className="mt-auto flex flex-col gap-3">
-            <button
-              type="button"
-              className="rounded-sm border border-bg-border px-4 py-2 text-sm text-text-secondary transition hover:border-accent-gold/50 hover:text-text-primary"
-            >
-              Sign In
-            </button>
             <Dialog.Close asChild>
-              <button
-                type="button"
-                onClick={onRequestAccess}
+              <Link
+                href="/signin"
+                className="rounded-sm border border-bg-border px-4 py-2 text-sm text-text-secondary transition hover:border-accent-gold/50 hover:text-text-primary"
+              >
+                Sign In
+              </Link>
+            </Dialog.Close>
+            <Dialog.Close asChild>
+              <Link
+                href="/architect"
                 className="rounded-sm bg-accent-gold px-4 py-2 text-sm font-semibold text-bg-primary transition hover:bg-accent-gold-light"
               >
-                Request Access
-              </button>
+                Start Free →
+              </Link>
             </Dialog.Close>
           </div>
         </Dialog.Content>

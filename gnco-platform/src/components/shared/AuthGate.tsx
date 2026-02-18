@@ -1,3 +1,6 @@
-export function AuthGate() {
-  return <div className="rounded-md border border-bg-border bg-bg-elevated p-4">AuthGate</div>
+import { ReactNode } from 'react'
+
+export function AuthGate({ children }: { children: ReactNode }) {
+  // OPEN BETA — no auth required
+  return <>{children}</>
 }
