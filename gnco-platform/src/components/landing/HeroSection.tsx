@@ -2,26 +2,107 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { useRef } from 'react'
-import { useCountUp } from '@/hooks/useCountUp'
-
+import { useEffect, useRef, useState } from 'react'
 
 const headlineWords = "Architect the World's Most Sophisticated Fund Structures.".split(' ')
 
-function StatItem({ value, label, statRef }: { value: number; label: string; statRef: React.RefObject<HTMLDivElement> }) {
-  const count = useCountUp({ end: value, duration: 1400 }, statRef)
+const stats = [
+  { value: 15, label: 'Jurisdictions Covered', suffix: '' },
+  { value: 52, label: 'Templates Available', suffix: '' },
+  { value: 0, label: 'ILPA-Aligned', suffix: '', isText: true },
+]
+
+function StatsStrip() {
+  const [isVisible, setIsVisible] = useState(false)
+  const [counts, setCounts] = useState(stats.map(() => 0))
+  const sectionRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.3 },
+    )
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (!isVisible) return
+
+    const timers: Array<ReturnType<typeof setInterval>> = []
+
+    stats.forEach((stat, index) => {
+      if (stat.isText) {
+        setCounts((prev) => {
+          const newCounts = [...prev]
+          newCounts[index] = stat.value
+          return newCounts
+        })
+        return
+      }
+
+      let current = 0
+      const increment = stat.value / 60
+      const timer = setInterval(() => {
+        current += increment
+        if (current >= stat.value) {
+          setCounts((prev) => {
+            const newCounts = [...prev]
+            newCounts[index] = stat.value
+            return newCounts
+          })
+          clearInterval(timer)
+        } else {
+          setCounts((prev) => {
+            const newCounts = [...prev]
+            newCounts[index] = Math.floor(current)
+            return newCounts
+          })
+        }
+      }, 16)
+
+      timers.push(timer)
+    })
+
+    return () => {
+      timers.forEach((timer) => clearInterval(timer))
+    }
+  }, [isVisible])
 
   return (
-    <div className="flex-1 text-center">
-      <p className="font-serif text-3xl text-accent-gold">{Math.round(count)}</p>
-      <p className="mt-1 text-sm text-text-secondary">{label}</p>
+    <div ref={sectionRef} className="mt-16 flex items-center justify-center gap-12 md:gap-16">
+      {stats.map((stat, index) => (
+        <div key={index} className="text-center">
+          {stat.isText ? (
+            <>
+              <p className="text-sm font-sans uppercase tracking-wider text-text-secondary">ILPA-Aligned</p>
+              <p className="mt-1 text-sm font-sans text-text-secondary">Reporting Standard</p>
+            </>
+          ) : (
+            <>
+              <div className="font-serif text-4xl font-bold text-accent-gold md:text-5xl">
+                {counts[index]}
+                {stat.suffix}
+              </div>
+              <p className="mt-2 text-sm font-sans text-text-secondary">{stat.label}</p>
+            </>
+          )}
+        </div>
+      ))}
     </div>
   )
 }
 
 export function HeroSection() {
-  const statsRef = useRef<HTMLDivElement>(null)
-
   return (
     <section className="hero-grid-bg relative flex min-h-screen items-center justify-center overflow-hidden px-6">
       <div
@@ -32,7 +113,12 @@ export function HeroSection() {
       />
 
       <div className="pointer-events-none absolute inset-0">
-        {[{ left: '18%', top: '26%', delay: 0 }, { left: '74%', top: '20%', delay: 2.2 }, { left: '30%', top: '72%', delay: 1.1 }, { left: '84%', top: '60%', delay: 3 }].map((dot, idx) => (
+        {[
+          { left: '18%', top: '26%', delay: 0 },
+          { left: '74%', top: '20%', delay: 2.2 },
+          { left: '30%', top: '72%', delay: 1.1 },
+          { left: '84%', top: '60%', delay: 3 },
+        ].map((dot, idx) => (
           <motion.span
             key={idx}
             className="absolute h-1.5 w-1.5 rounded-full bg-accent-gold/70"
@@ -105,20 +191,7 @@ export function HeroSection() {
           Currently in Open Beta — Free access for all users. No credit card required.
         </motion.p>
 
-        <motion.div
-          ref={statsRef}
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.7 }}
-          className="mx-auto mt-16 flex max-w-3xl flex-col divide-y divide-bg-border border border-bg-border bg-bg-surface/50 sm:flex-row sm:divide-x sm:divide-y-0"
-        >
-          <StatItem value={15} label="Jurisdictions Covered" statRef={statsRef} />
-          <StatItem value={52} label="Templates Available" statRef={statsRef} />
-          <div className="flex-1 py-6 text-center">
-            <p className="font-serif text-3xl text-accent-gold">ILPA-Aligned</p>
-            <p className="mt-1 text-sm text-text-secondary">Reporting Standard</p>
-          </div>
-        </motion.div>
+        <StatsStrip />
       </div>
     </section>
   )
