@@ -3,11 +3,13 @@
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 
+import { COVERAGE_DATA } from '@/data/coverage'
 import { generateRecommendations } from '@/lib/architect-logic'
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 import type { ArchitectBrief } from '@/lib/types'
 
 const WIZARD_STORAGE_KEY = 'gnco:architect-brief'
+const BRIEF_EXPORT_ENABLED = true
 
 const methodologyWeights = {
   taxFriction: 25,
@@ -51,6 +53,8 @@ function formatPriority(priority: string) {
 export function ArchitectResultsClient() {
   const [brief] = useState<Partial<ArchitectBrief> | null>(() => getSavedBrief())
   const [tradeoffs, setTradeoffs] = useState({ cost: 50, time: 50, familiarity: 50, taxFriction: 50 })
+  const [exporting, setExporting] = useState(false)
+  const [exportMessage, setExportMessage] = useState<string | null>(null)
 
   const topThree = useMemo(() => {
     if (!brief) return []
@@ -63,6 +67,78 @@ export function ArchitectResultsClient() {
   }, [brief])
 
   const topPriorities = (brief?.priorities ?? []).slice(0, 3).map(formatPriority)
+
+  const exportBriefPdf = async () => {
+    if (!brief || !topThree[0]) return
+
+    setExporting(true)
+    setExportMessage(null)
+
+    const date = new Date().toISOString().slice(0, 10)
+    const topStructure = topThree[0]
+    const sourceItems = topThree
+      .map((result) => COVERAGE_DATA.find((entry) => entry.name === result.jurisdiction))
+      .filter((value): value is NonNullable<typeof value> => Boolean(value))
+      .map((coverage) => ({
+        label: `${coverage.name} coverage (${coverage.lastUpdated})`,
+        href: `https://gnco.local/coverage/${coverage.slug}`,
+      }))
+
+    const response = await fetch('/api/export/brief', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: 'GNCO Attorney Brief Pack',
+        date,
+        selectedStructure: {
+          jurisdiction: topStructure.jurisdiction,
+          vehicleType: topStructure.vehicleType,
+          timeline: `${topStructure.estimatedTimelineWeeks.min}-${topStructure.estimatedTimelineWeeks.max} weeks`,
+          cost: `USD ${topStructure.estimatedFormationCost.min.toLocaleString()}-${topStructure.estimatedFormationCost.max.toLocaleString()}`,
+        },
+        entities: [
+          `GP entity (${brief.gpDomicile ?? 'TBD'})`,
+          `${topStructure.jurisdiction} fund vehicle (${topStructure.vehicleType})`,
+          'Management company',
+          'LP investor cohort',
+        ],
+        assumptions: [
+          `Target launch timeline: ${brief.timeline ?? '60-90-days'}`,
+          `Manager experience profile: ${brief.experience ?? 'experienced'}`,
+          `Priority focus: ${(brief.priorities ?? []).map(formatPriority).join(', ') || 'balanced'}`,
+        ],
+        sources: sourceItems.length
+          ? sourceItems
+          : [{ label: 'Coverage data baseline', href: 'https://gnco.local/coverage' }],
+        questionsForCounsel: [
+          'Does the proposed structure align with target LP tax and regulatory constraints?',
+          'Are there blocker, feeder, or treaty enhancements required for this LP mix?',
+          'Which local legal opinions and filing steps are critical for first close?',
+        ],
+        disclaimer:
+          'This brief is for informational planning only and does not constitute legal, tax, regulatory, investment, or brokerage advice.',
+      }),
+    })
+
+    if (!response.ok) {
+      setExportMessage('Export failed. Please try again.')
+      setExporting(false)
+      return
+    }
+
+    const blob = await response.blob()
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = `gnco-attorney-brief-${date}.pdf`
+    document.body.appendChild(anchor)
+    anchor.click()
+    anchor.remove()
+    URL.revokeObjectURL(url)
+
+    setExportMessage('PDF exported successfully.')
+    setExporting(false)
+  }
 
   if (!brief) {
     return (
@@ -124,7 +200,28 @@ export function ArchitectResultsClient() {
         </ul>
       </section>
 
-      <button className="rounded-md border border-accent-gold px-4 py-2 text-sm text-accent-gold">Export (Coming soon)</button>
+      {BRIEF_EXPORT_ENABLED ? (
+        <div className="space-y-2">
+          <button
+            type="button"
+            onClick={exportBriefPdf}
+            disabled={exporting}
+            className="rounded-md border border-accent-gold px-4 py-2 text-sm text-accent-gold disabled:opacity-60"
+          >
+            {exporting ? 'Exporting PDF...' : 'Export PDF'}
+          </button>
+          {exportMessage ? <p className="text-xs text-text-secondary">{exportMessage}</p> : null}
+        </div>
+      ) : (
+        <button
+          type="button"
+          disabled
+          title="Coming soon"
+          className="cursor-not-allowed rounded-md border border-accent-gold/50 px-4 py-2 text-sm text-accent-gold/70"
+        >
+          Export PDF
+        </button>
+      )}
     </main>
   )
 }
