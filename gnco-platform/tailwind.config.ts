@@ -21,8 +21,8 @@ const config: Config = {
         'text-tertiary': '#4A6080',
       },
       fontFamily: {
-        serif: ['DM Serif Display', 'Georgia', 'serif'],
-        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-dm-serif)', 'Georgia', 'serif'],
+        sans: ['var(--font-dm-sans)', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         sm: '4px',
