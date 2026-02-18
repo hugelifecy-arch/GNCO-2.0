@@ -11,6 +11,8 @@ import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 import type { ArchitectBrief, FundStructureRecommendation } from '@/lib/types'
 import { cn, formatCurrency } from '@/lib/utils'
 
+import { BookCallCTA } from './BookCallCTA'
+
 interface RecommendationPanelProps {
   brief: ArchitectBrief
   onStartNew: () => void
@@ -259,6 +261,8 @@ export function RecommendationPanel({ brief, onStartNew }: RecommendationPanelPr
 
         <ShareResultsButton results={sharePayload} />
       </div>
+
+      <BookCallCTA />
 
       <section className="rounded-xl border border-bg-border bg-bg-surface p-6">
         <div className="mb-4 flex items-center justify-between">
