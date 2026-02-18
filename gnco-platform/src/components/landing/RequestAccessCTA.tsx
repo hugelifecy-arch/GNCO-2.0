@@ -20,7 +20,7 @@ export function RequestAccessCTA({ onRequestAccess }: RequestAccessCTAProps) {
         <h2 className="mt-4 font-serif text-4xl text-text-primary">Join the Due Diligence Program</h2>
         <p className="mt-5 text-text-secondary">
           GNCO is currently available to a select group of family offices and fund managers. Applications are reviewed individually.
-          Pricing starts at $12,000/year — less than 2 hours of structuring counsel.
+          Pricing starts at €11,000/year — less than 2 hours of structuring counsel.
         </p>
 
         <button
