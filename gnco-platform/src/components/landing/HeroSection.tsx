@@ -2,151 +2,36 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
 
-const headlineWords = "Architect the World's Most Sophisticated Fund Structures.".split(' ')
+const headlineWords = 'Architect fund structures with clearer assumptions—before you call counsel.'.split(' ')
 
 const stats = [
-  { value: 15, label: 'Jurisdictions Covered', suffix: '' },
-  { value: 52, label: 'Templates Available', suffix: '' },
-  { value: 0, label: 'ILPA-Aligned', suffix: '', isText: true },
+  { value: '15', label: 'Jurisdictions in Coverage Library' },
+  { value: '8', label: 'Guided Intake Steps' },
+  { value: 'Open', label: 'Beta Status' },
 ]
-
-function StatsStrip() {
-  const [isVisible, setIsVisible] = useState(false)
-  const [counts, setCounts] = useState(stats.map(() => 0))
-  const sectionRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.3 },
-    )
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
-    }
-
-    return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
-    if (!isVisible) return
-
-    const timers: Array<ReturnType<typeof setInterval>> = []
-
-    stats.forEach((stat, index) => {
-      if (stat.isText) {
-        setCounts((prev) => {
-          const newCounts = [...prev]
-          newCounts[index] = stat.value
-          return newCounts
-        })
-        return
-      }
-
-      let current = 0
-      const increment = stat.value / 60
-      const timer = setInterval(() => {
-        current += increment
-        if (current >= stat.value) {
-          setCounts((prev) => {
-            const newCounts = [...prev]
-            newCounts[index] = stat.value
-            return newCounts
-          })
-          clearInterval(timer)
-        } else {
-          setCounts((prev) => {
-            const newCounts = [...prev]
-            newCounts[index] = Math.floor(current)
-            return newCounts
-          })
-        }
-      }, 16)
-
-      timers.push(timer)
-    })
-
-    return () => {
-      timers.forEach((timer) => clearInterval(timer))
-    }
-  }, [isVisible])
-
-  return (
-    <div ref={sectionRef} className="mt-16 flex items-center justify-center gap-12 md:gap-16">
-      {stats.map((stat, index) => (
-        <div key={index} className="text-center">
-          {stat.isText ? (
-            <>
-              <p className="text-sm font-sans uppercase tracking-wider text-text-secondary">ILPA-Aligned</p>
-              <p className="mt-1 text-sm font-sans text-text-secondary">Reporting Standard</p>
-            </>
-          ) : (
-            <>
-              <div className="font-serif text-4xl font-bold text-accent-gold md:text-5xl">
-                {counts[index]}
-                {stat.suffix}
-              </div>
-              <p className="mt-2 text-sm font-sans text-text-secondary">{stat.label}</p>
-            </>
-          )}
-        </div>
-      ))}
-    </div>
-  )
-}
 
 export function HeroSection() {
   return (
     <section className="hero-grid-bg relative flex min-h-screen items-center justify-center overflow-hidden px-6">
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background: 'radial-gradient(circle at 50% 85%, rgba(10, 22, 40, 0.95) 0%, rgba(10, 22, 40, 0.55) 35%, transparent 70%)',
-        }}
-      />
-
-      <div className="pointer-events-none absolute inset-0">
-        {[
-          { left: '18%', top: '26%', delay: 0 },
-          { left: '74%', top: '20%', delay: 2.2 },
-          { left: '30%', top: '72%', delay: 1.1 },
-          { left: '84%', top: '60%', delay: 3 },
-        ].map((dot, idx) => (
-          <motion.span
-            key={idx}
-            className="absolute h-1.5 w-1.5 rounded-full bg-accent-gold/70"
-            style={{ left: dot.left, top: dot.top }}
-            animate={{ y: [0, -14, 0], opacity: [0.25, 0.9, 0.25] }}
-            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: dot.delay }}
-          />
-        ))}
-      </div>
-
-      <div className="relative mx-auto w-full max-w-4xl text-center">
+      <div className="relative mx-auto w-full max-w-5xl text-center">
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0 }}
+          transition={{ duration: 0.5 }}
           className="mb-6 font-sans text-xs uppercase tracking-[0.3em] text-accent-gold"
         >
-          INSTITUTIONAL FUND ARCHITECTURE
+          OPEN BETA
         </motion.p>
 
-        <h1 className="font-serif text-5xl leading-tight text-text-primary md:text-7xl">
+        <h1 className="font-serif text-4xl leading-tight text-text-primary md:text-6xl">
           {headlineWords.map((word, index) => (
             <motion.span
               key={`${word}-${index}`}
-              className="mr-3 inline-block"
-              initial={{ opacity: 0, y: 28 }}
+              className="mr-2 inline-block"
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.1 + index * 0.05 }}
+              transition={{ duration: 0.4, delay: 0.08 + index * 0.04 }}
             >
               {word}
             </motion.span>
@@ -156,42 +41,34 @@ export function HeroSection() {
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
           className="mx-auto mt-6 max-w-3xl text-lg text-text-secondary md:text-xl"
         >
-          GNCO eliminates 6 weeks and €50,000+ in legal fees by modeling your optimal fund structure before you call counsel. Make jurisdiction decisions in hours, not months.
+          GNCO (Open Beta) helps you compare domiciles, timelines, and operating requirements in one place. Outputs are decision support—not legal, tax, or investment advice.
         </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.45 }}
           className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row"
         >
-          <Link
-            href="/architect"
-            className="w-full rounded-sm bg-accent-gold px-8 py-4 font-semibold text-bg-primary transition hover:bg-accent-gold-light sm:w-auto"
-          >
-            Start Free Trial →
+          <Link href="/architect" className="w-full rounded-sm bg-accent-gold px-8 py-4 font-semibold text-bg-primary transition hover:bg-accent-gold-light sm:w-auto">
+            Enter Beta (Demo)
           </Link>
-          <Link
-            href="/methodology"
-            className="w-full rounded-sm border border-accent-gold/40 px-8 py-4 text-accent-gold transition hover:bg-accent-gold/5 sm:w-auto"
-          >
-            View Methodology →
+          <Link href="/coverage" className="w-full rounded-sm border border-accent-gold/40 px-8 py-4 text-accent-gold transition hover:border-accent-gold sm:w-auto">
+            View Coverage
           </Link>
         </motion.div>
 
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="mt-4 text-xs text-text-tertiary"
-        >
-          Currently in Open Beta — Free access for all users. No credit card required.
-        </motion.p>
-
-        <StatsStrip />
+        <div className="mt-14 grid gap-5 md:grid-cols-3">
+          {stats.map((stat) => (
+            <div key={stat.label} className="rounded-lg border border-bg-border bg-bg-surface/60 p-5">
+              <p className="font-serif text-3xl text-accent-gold">{stat.value}</p>
+              <p className="mt-1 text-sm text-text-secondary">{stat.label}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

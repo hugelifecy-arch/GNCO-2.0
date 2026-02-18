@@ -6,35 +6,48 @@ import { StatusBadge } from '@/components/shared/StatusBadge'
 import { MOCK_DOCUMENTS } from '@/lib/mock-data'
 import { formatDate } from '@/lib/utils'
 
-const categories = [
-  { key: 'all', label: 'All Documents (18)' },
-  { key: 'formation', label: 'Formation (3)' },
-  { key: 'lp-agreement', label: 'LP Agreements (4)' },
-  { key: 'financial', label: 'Financial Reports (4)' },
-  { key: 'capital-activity', label: 'Capital Activity (3)' },
-  { key: 'regulatory', label: 'Regulatory (2)' },
-  { key: 'correspondence', label: 'Correspondence (2)' },
-] as const
+const categoryKeys = ['all', 'formation', 'lp-agreement', 'financial', 'capital-activity', 'regulatory', 'correspondence'] as const
+
+type DemoMode = 'sample' | 'empty'
 
 const auditEntries = Array.from({ length: 20 }).map((_, index) => ({
   user: ['A. Morgan', 'J. Patel', 'Compliance Bot', 'L. Chen'][index % 4],
   action: ['Viewed', 'Downloaded', 'Shared'][index % 3],
   document: MOCK_DOCUMENTS[index % MOCK_DOCUMENTS.length]?.name ?? 'Document',
   timestamp: new Date(Date.now() - index * 1000 * 60 * 42).toISOString(),
-  ip: `10.4.0.${20 + index}`,
+  ip: `203.0.113.${20 + index}`,
 }))
 
-export function DocumentVault() {
-  const [category, setCategory] = useState<(typeof categories)[number]['key']>('all')
+interface DocumentVaultProps {
+  demoMode?: DemoMode
+}
+
+export function DocumentVault({ demoMode = 'sample' }: DocumentVaultProps) {
+  const [category, setCategory] = useState<(typeof categoryKeys)[number]>('all')
   const [gridMode, setGridMode] = useState(true)
   const [auditOpen, setAuditOpen] = useState(true)
 
+  const documents = useMemo(() => (demoMode === 'sample' ? MOCK_DOCUMENTS : []), [demoMode])
+
+  const categories = useMemo(
+    () => [
+      { key: 'all', label: `All Documents (${documents.length})` },
+      { key: 'formation', label: `Formation (${documents.filter((doc) => doc.category === 'formation').length})` },
+      { key: 'lp-agreement', label: `LP Agreements (${documents.filter((doc) => doc.category === 'lp-agreement').length})` },
+      { key: 'financial', label: `Financial Reports (${documents.filter((doc) => doc.category === 'financial').length})` },
+      { key: 'capital-activity', label: `Capital Activity (${documents.filter((doc) => doc.category === 'capital-activity').length})` },
+      { key: 'regulatory', label: `Regulatory (${documents.filter((doc) => doc.category === 'regulatory').length})` },
+      { key: 'correspondence', label: `Correspondence (${documents.filter((doc) => doc.category === 'correspondence').length})` },
+    ],
+    [documents]
+  )
+
   const rows = useMemo(
     () =>
-      MOCK_DOCUMENTS.filter((doc) => category === 'all' || doc.category === category).sort(
-        (a, b) => +new Date(b.uploadedDate) - +new Date(a.uploadedDate)
-      ),
-    [category]
+      documents
+        .filter((doc) => category === 'all' || doc.category === category)
+        .sort((a, b) => +new Date(b.uploadedDate) - +new Date(a.uploadedDate)),
+    [category, documents]
   )
 
   const isExpiringSoon = (expiryDate?: string) => {
@@ -53,10 +66,8 @@ export function DocumentVault() {
               <button
                 key={item.key}
                 type="button"
-                onClick={() => setCategory(item.key)}
-                className={`w-full rounded px-3 py-2 text-left text-sm ${
-                  category === item.key ? 'bg-accent-gold/15 text-accent-gold' : 'hover:bg-bg-elevated'
-                }`}
+                onClick={() => setCategory(item.key as (typeof categoryKeys)[number])}
+                className={`w-full rounded px-3 py-2 text-left text-sm ${category === item.key ? 'bg-accent-gold/15 text-accent-gold' : 'hover:bg-bg-elevated'}`}
               >
                 {item.label}
               </button>
@@ -79,7 +90,7 @@ export function DocumentVault() {
                 {isExpiringSoon(doc.expiryDate) ? <div className="mt-2"><StatusBadge status="pending" label="Expiry Warning" /></div> : null}
                 <div className="mt-3 flex flex-wrap gap-1 text-xs">
                   {['View', 'Download', 'Share', 'Version History'].map((action) => (
-                    <button key={action} className="rounded border border-bg-border px-2 py-1">{action}</button>
+                    <button key={action} className="rounded border border-bg-border px-2 py-1">{action} (Demo)</button>
                   ))}
                 </div>
               </article>
@@ -89,9 +100,10 @@ export function DocumentVault() {
       </div>
 
       <section className="rounded-lg border border-bg-border bg-bg-surface p-4">
-        <button type="button" className="mb-3 text-left font-serif text-lg" onClick={() => setAuditOpen((prev) => !prev)}>
+        <button type="button" className="mb-1 text-left font-serif text-lg" onClick={() => setAuditOpen((prev) => !prev)}>
           Recent Access Activity {auditOpen ? '▾' : '▸'}
         </button>
+        <p className="mb-3 text-xs text-text-tertiary">Synthetic activity log (demo)</p>
         {auditOpen ? (
           <div className="overflow-x-auto">
             <table className="min-w-full text-left text-sm">
@@ -101,11 +113,7 @@ export function DocumentVault() {
               <tbody>
                 {auditEntries.map((entry, index) => (
                   <tr key={`${entry.timestamp}-${index}`} className="border-b border-bg-border/30">
-                    <td className="px-2 py-2">{entry.user}</td>
-                    <td className="px-2 py-2">{entry.action}</td>
-                    <td className="px-2 py-2">{entry.document}</td>
-                    <td className="px-2 py-2">{formatDate(entry.timestamp, 'long')}</td>
-                    <td className="px-2 py-2">{entry.ip}</td>
+                    <td className="px-2 py-2">{entry.user}</td><td className="px-2 py-2">{entry.action}</td><td className="px-2 py-2">{entry.document}</td><td className="px-2 py-2">{formatDate(entry.timestamp, 'long')}</td><td className="px-2 py-2">{entry.ip}</td>
                   </tr>
                 ))}
               </tbody>

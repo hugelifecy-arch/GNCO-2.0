@@ -143,7 +143,7 @@ export function InstantCostCalculator() {
               />
               <div className="mt-1 flex justify-between text-xs text-text-tertiary">
                 <span>5 LPs</span>
-                <span>50 LPs</span>
+                <span>LP base</span>
               </div>
             </div>
           </div>

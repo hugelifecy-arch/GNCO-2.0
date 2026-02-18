@@ -18,15 +18,16 @@ export function MarketingFooter() {
           <FooterLink href="/architect">Architect Engine</FooterLink>
           <FooterLink href="/coverage">Coverage</FooterLink>
           <FooterLink href="/methodology">Methodology</FooterLink>
-          <FooterLink href="/architect">Start Free</FooterLink>
+          <FooterLink href="/architect">Enter Beta (Demo)</FooterLink>
         </div>
 
         <div className="space-y-2">
           <h4 className="font-semibold text-text-primary">Legal</h4>
           <FooterLink href="/disclosures">Disclosures</FooterLink>
-          <FooterLink href="/">Privacy Policy</FooterLink>
-          <FooterLink href="/">Terms of Service</FooterLink>
-          <FooterLink href="/">Data Architecture</FooterLink>
+          <FooterLink href="/privacy">Privacy Policy</FooterLink>
+          <FooterLink href="/terms">Terms of Service</FooterLink>
+          <FooterLink href="/data-architecture">Data Architecture</FooterLink>
+          <FooterLink href="/dpa">Data Processing Addendum (DPA)</FooterLink>
         </div>
 
         <div className="space-y-3">

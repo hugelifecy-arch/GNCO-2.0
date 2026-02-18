@@ -60,16 +60,16 @@ export function NavBar() {
 
           <div className="hidden items-center gap-2 md:flex">
             <Link
-              href="/signin"
+              href="/architect"
               className="rounded-sm border border-bg-border px-4 py-2 text-sm text-text-secondary transition hover:border-accent-gold/50 hover:text-text-primary"
             >
-              Sign In
+              Enter Beta (Demo)
             </Link>
             <Link
               href="/architect"
               className="rounded-sm bg-accent-gold px-5 py-2 text-sm font-semibold text-bg-primary transition hover:bg-accent-gold-light"
             >
-              Start Free →
+              Enter Beta (Demo) →
             </Link>
           </div>
 

@@ -3,11 +3,11 @@
 import { HeroSection } from '@/components/landing/HeroSection'
 import { CredibilityStrip } from '@/components/landing/CredibilityStrip'
 import { FeatureCards } from '@/components/landing/FeatureCards'
-import { InstantCostCalculator } from '@/components/landing/InstantCostCalculator'
 import { HowItWorks } from '@/components/landing/HowItWorks'
 import { PartnerStrip } from '@/components/landing/PartnerStrip'
 import { RequestAccessCTA } from '@/components/landing/RequestAccessCTA'
 import { MarketingFooter } from '@/components/landing/MarketingFooter'
+import { WhatsLiveToday } from '@/components/landing/WhatsLiveToday'
 
 export default function HomePage() {
   return (
@@ -15,14 +15,13 @@ export default function HomePage() {
       <main className="bg-bg-primary text-text-primary">
         <HeroSection />
         <CredibilityStrip />
-        <InstantCostCalculator />
+        <WhatsLiveToday />
         <FeatureCards />
         <PartnerStrip />
         <HowItWorks />
         <RequestAccessCTA />
       </main>
       <MarketingFooter />
-
     </>
   )
 }

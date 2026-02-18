@@ -6,41 +6,36 @@ import { BarChart2, Cpu, Globe } from 'lucide-react'
 
 const features = [
   {
-    title: '15-Jurisdiction Architecture',
-    body: 'Model fund structures across Cayman Islands, Luxembourg, Delaware, Singapore, Ireland, BVI, Cyprus, and 8 additional domiciles. Every structure accounts for tax treaty networks and LP domicile optimization.',
+    title: 'Coverage Library (15 Domiciles)',
+    body: 'Review directional formation cost and timeline ranges for core fund domiciles in one place.',
     footer: '→ View Coverage',
     href: '/coverage',
     icon: Globe,
     iconColor: 'text-accent-blue',
-    featured: false,
   },
   {
-    title: 'GNCO Architect Engine',
-    body: 'Input your LP mix, GP domicile, fund size, and priorities. The Engine scores all 15 jurisdictions across 6 weighted criteria, models tax impact for up to 50 LPs, and generates your attorney brief in under 30 seconds.',
-    footer: '→ Try the Architect',
+    title: 'Guided Architect Intake',
+    body: 'Capture fund type, size, GP domicile, LP base, and priorities through an 8-step workflow designed for early structuring conversations.',
+    footer: '→ Enter Beta',
     href: '/architect',
     icon: Cpu,
     iconColor: 'text-accent-gold',
-    featured: true,
   },
   {
-    title: 'Full Operator Suite',
-    body: 'LP registry, capital call manager, distribution waterfall calculator, document vault, and ILPA-aligned reporting — all in one authenticated, audited environment.',
-    footer: '→ See All Features',
-    href: '/dashboard',
+    title: 'Methodology & Disclosures',
+    body: 'Understand how scoring is designed, what the model does today, and where legal and tax review remains essential.',
+    footer: '→ Read Methodology',
+    href: '/methodology',
     icon: BarChart2,
     iconColor: 'text-accent-green',
-    featured: false,
   },
 ]
 
 export function FeatureCards() {
   return (
     <section className="mx-auto max-w-6xl px-6 py-24">
-      <h2 className="text-center font-serif text-4xl text-text-primary">Built for Institutional Precision</h2>
-      <p className="mb-16 mt-4 text-center text-lg text-text-secondary">
-        Every feature designed around how family offices and fund managers actually work.
-      </p>
+      <h2 className="text-center font-serif text-4xl text-text-primary">Built for practical pre-counsel planning</h2>
+      <p className="mb-16 mt-4 text-center text-lg text-text-secondary">Use GNCO to organize assumptions and compare options before formal legal structuring.</p>
 
       <div className="grid gap-6 lg:grid-cols-3">
         {features.map((feature, idx) => {
@@ -52,15 +47,8 @@ export function FeatureCards() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
               transition={{ duration: 0.45, delay: idx * 0.1 }}
-              className={`rounded-lg border bg-bg-surface p-8 transition-all duration-300 hover:border-accent-gold/30 ${
-                feature.featured ? 'border-accent-gold/40' : 'border-bg-border'
-              }`}
+              className="rounded-lg border border-bg-border bg-bg-surface p-8 transition-all duration-300 hover:border-accent-gold/30"
             >
-              {feature.featured && (
-                <span className="mb-6 inline-flex rounded-full border border-accent-gold/30 bg-accent-gold/10 px-2.5 py-0.5 text-xs text-accent-gold">
-                  Flagship Feature
-                </span>
-              )}
               <Icon className={`mb-6 h-7 w-7 ${feature.iconColor}`} />
               <h3 className="font-serif text-2xl text-text-primary">{feature.title}</h3>
               <p className="mt-4 text-text-secondary">{feature.body}</p>
