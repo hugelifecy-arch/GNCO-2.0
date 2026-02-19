@@ -3,6 +3,7 @@ import { FundAllocationChart } from '@/components/dashboard/FundAllocationChart'
 import { KPIStrip } from '@/components/dashboard/KPIStrip'
 import { PerformanceChart } from '@/components/dashboard/PerformanceChart'
 import { RecentDocuments } from '@/components/dashboard/RecentDocuments'
+import { SavedComparisons } from '@/components/dashboard/SavedComparisons'
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary'
 import {
   MOCK_CAPITAL_CALLS,
@@ -42,9 +43,14 @@ export default function DashboardPage() {
         </ErrorBoundary>
       </section>
 
-      <ErrorBoundary>
-        <RecentDocuments documents={recentDocuments} />
-      </ErrorBoundary>
+      <section className="grid gap-6 lg:grid-cols-2">
+        <ErrorBoundary>
+          <RecentDocuments documents={recentDocuments} />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <SavedComparisons />
+        </ErrorBoundary>
+      </section>
     </main>
   )
 }
