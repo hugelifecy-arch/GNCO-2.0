@@ -7,6 +7,7 @@ import {
   ArrowUpDown,
   Brain,
   Cpu,
+  Columns3,
   FileText,
   FolderOpen,
   LayoutDashboard,
@@ -38,7 +39,10 @@ const navSections: NavSection[] = [
   },
   {
     title: 'Module 1 — Architect',
-    items: [{ label: 'Fund Architect', href: '/architect', icon: Cpu, iconClassName: 'text-accent-gold' }],
+    items: [
+      { label: 'Fund Architect', href: '/architect', icon: Cpu, iconClassName: 'text-accent-gold' },
+      { label: 'Structure Compare', href: '/compare', icon: Columns3 },
+    ],
   },
   {
     title: 'Module 2 — Operator',
