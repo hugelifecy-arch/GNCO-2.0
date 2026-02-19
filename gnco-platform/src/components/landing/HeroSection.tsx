@@ -121,7 +121,7 @@ export function HeroSection() {
             href="/architect"
             className="w-full rounded-sm bg-accent-gold px-8 py-4 font-semibold text-bg-primary transition hover:bg-accent-gold-light sm:w-auto"
           >
-            Start Free Trial →
+            Start Free →
           </Link>
           <Link
             href="/methodology"
@@ -130,15 +130,6 @@ export function HeroSection() {
             View Methodology →
           </Link>
         </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="mt-4 text-xs text-text-tertiary"
-        >
-          Currently in Open Beta — Free access for all users. No credit card required.
-        </motion.p>
 
         <StatsStrip />
       </div>
