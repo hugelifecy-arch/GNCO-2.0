@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import Link from 'next/link'
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 import { trackEvent } from '@/lib/analytics'
 import { formatCurrency } from '@/lib/utils'
@@ -220,11 +221,19 @@ export function InstantCostCalculator() {
         </div>
 
         <div className="mt-10 text-center">
-          <button className="rounded-sm bg-accent-gold px-8 py-4 font-semibold text-bg-primary transition-all duration-200 hover:bg-accent-gold-light">
+          <Link
+            href="/coverage"
+            className="inline-block rounded-sm bg-accent-gold px-8 py-4 font-semibold text-bg-primary transition-all duration-200 hover:bg-accent-gold-light"
+          >
             {`See Full ${JURISDICTIONS.length}-Jurisdiction Comparison →`}
-          </button>
+          </Link>
           <p className="mt-4 text-sm text-text-tertiary">
             Or start the full Architect Engine to get personalized recommendations
+          </p>
+          <p className="mx-auto mt-5 max-w-3xl text-sm text-text-secondary">
+            Cost estimates last verified: February 19, 2026. Actual costs vary by service provider,
+            fund complexity, and negotiated fees. Consult qualified counsel for binding cost
+            estimates.
           </p>
         </div>
       </div>
