@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import CitationsList from '@/components/CitationsList'
 import DataFreshnessBanner from '@/components/DataFreshnessBanner'
 import { getCoverageBySlug } from '@/data/coverage'
 
@@ -55,6 +56,8 @@ export default function CoverageDetailPage({ params }: { params: { slug: string 
           ))}
         </ul>
       </section>
+
+      <CitationsList citations={coverage.citations} />
     </main>
   )
 }
