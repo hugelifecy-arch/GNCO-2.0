@@ -4,7 +4,11 @@ import { motion } from 'framer-motion'
 
 import Link from 'next/link'
 
-export function RequestAccessCTA() {
+type RequestAccessCTAProps = {
+  openBetaPractitionerCount: number | null
+}
+
+export function RequestAccessCTA({ openBetaPractitionerCount }: RequestAccessCTAProps) {
   return (
     <section className="border-y border-bg-border bg-bg-elevated py-24">
       <motion.div
@@ -18,7 +22,9 @@ export function RequestAccessCTA() {
         <div className="mb-4 flex items-center justify-center gap-2">
           <div className="h-2 w-2 animate-pulse rounded-full bg-accent-green" />
           <p className="text-sm text-text-secondary">
-            <span className="font-semibold text-accent-gold">127</span> beta users actively testing
+            Join{' '}
+            <span className="font-semibold text-accent-gold">{openBetaPractitionerCount ?? '—'}</span>{' '}
+            practitioners in open beta
           </p>
         </div>
         <h2 className="mt-4 font-serif text-4xl text-text-primary">Start Using GNCO Today</h2>
