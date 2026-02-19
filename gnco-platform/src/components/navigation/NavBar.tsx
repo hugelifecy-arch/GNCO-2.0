@@ -38,9 +38,12 @@ export function NavBar() {
         )}
 
         <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="font-serif text-[20px] font-bold leading-none text-accent-gold">◆GNCO</span>
-            <span className="beta-badge">BETA</span>
+          <Link href="/" aria-label="GNCO — Home" className="flex items-center gap-0">
+            <span className="logo-mark font-serif text-[20px] font-bold leading-none text-accent-gold">◆</span>
+            <span className="logo-text font-serif text-[20px] font-bold leading-none text-accent-gold">GNCO</span>
+            <span className="beta-badge" aria-label="Beta version">
+              BETA
+            </span>
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">

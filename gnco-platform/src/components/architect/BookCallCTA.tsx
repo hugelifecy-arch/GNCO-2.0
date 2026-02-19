@@ -61,7 +61,7 @@ export function BookCallCTA({ onBookCallClick }: BookCallCTAProps) {
             <div className="text-sm text-text-secondary">
               <span className="text-text-tertiary line-through">€1,500</span>
               <span className="ml-2 font-semibold text-accent-gold">FREE</span>
-              <span className="ml-1 text-text-tertiary">(Beta Launch Offer)</span>
+              <span className="ml-1 text-text-tertiary">(Launch Offer)</span>
             </div>
           </div>
 

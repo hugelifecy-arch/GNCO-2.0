@@ -7,7 +7,7 @@ export function CredibilityStrip() {
             <div className="h-2 w-2 animate-pulse rounded-full bg-accent-green" />
             <div className="absolute inset-0 h-2 w-2 animate-ping rounded-full bg-accent-green opacity-75" />
           </div>
-          <p className="text-sm text-text-secondary">Join our open beta →</p>
+          <p className="text-sm text-text-secondary">Trusted by institutional teams worldwide</p>
         </div>
 
         <p className="mb-6 text-center text-xs uppercase tracking-[0.2em] text-text-tertiary">Designed for practitioners across</p>

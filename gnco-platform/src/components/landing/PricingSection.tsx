@@ -8,9 +8,9 @@ export function PricingSection() {
 
         <div className="mx-auto mt-12 max-w-3xl rounded-2xl border border-accent-gold/40 bg-bg-elevated p-8 shadow-[0_0_0_1px_rgba(212,175,55,0.08)]">
           <p className="inline-flex rounded-full border border-accent-green/30 bg-accent-green/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent-green">
-            Open Beta
+            Free Access
           </p>
-          <h3 className="mt-5 font-serif text-3xl text-text-primary">Open Beta</h3>
+          <h3 className="mt-5 font-serif text-3xl text-text-primary">Free Access</h3>
           <p className="mt-2 text-4xl font-semibold text-accent-gold">Free</p>
           <p className="mt-4 text-text-secondary">
             No credit card required. Full platform access during development.
@@ -31,7 +31,7 @@ export function PricingSection() {
         </div>
 
         <p className="mx-auto mt-8 max-w-3xl text-center text-sm text-text-tertiary">
-          Paid plans launching Q3 2026. Beta users receive free lifetime access to core features.{' '}
+          Paid plans launching Q3 2026. Early users receive free lifetime access to core features.{' '}
           <Link href="/disclosures" className="text-accent-gold transition hover:text-accent-gold-light">
             See full terms →
           </Link>
