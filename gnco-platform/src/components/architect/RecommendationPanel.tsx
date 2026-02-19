@@ -226,7 +226,7 @@ export function RecommendationPanel({ brief, onStartNew }: RecommendationPanelPr
     return (
       <div className="flex min-h-[76vh] flex-col items-center justify-center rounded-xl border border-bg-border bg-bg-surface p-10">
         <Loader2 className="h-12 w-12 animate-spin text-accent-gold" />
-        <p className="mt-4 text-lg">Analyzing 15 jurisdictions...</p>
+        <p className="mt-4 text-lg">{`Analyzing ${JURISDICTIONS.length} jurisdictions...`}</p>
         <div className="mt-8 h-2 w-full max-w-md overflow-hidden rounded-full bg-bg-border">
           <motion.div className="h-full bg-accent-gold" initial={{ width: '0%' }} animate={{ width: '100%' }} transition={{ duration: 2 }} />
         </div>

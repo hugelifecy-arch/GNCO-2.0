@@ -3,11 +3,12 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
+import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 
 const headlineWords = "Architect the World's Most Sophisticated Fund Structures.".split(' ')
 
 const stats = [
-  { value: 15, label: 'Jurisdictions Covered', suffix: '' },
+  { value: JURISDICTIONS.length, label: 'Jurisdictions Covered', suffix: '' },
   { value: 52, label: 'Templates Available', suffix: '' },
   { value: 0, label: 'ILPA-Aligned', suffix: '', isText: true },
 ]

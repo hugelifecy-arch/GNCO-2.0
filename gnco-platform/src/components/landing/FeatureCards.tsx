@@ -3,11 +3,14 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { BarChart2, Cpu, Globe } from 'lucide-react'
+import { JURISDICTIONS } from '@/lib/jurisdiction-data'
+
+const jurisdictionCount = JURISDICTIONS.length
 
 const features = [
   {
-    title: '15-Jurisdiction Architecture',
-    body: 'Model fund structures across Cayman Islands, Luxembourg, Delaware, Singapore, Ireland, BVI, Cyprus, and 8 additional domiciles. Every structure accounts for tax treaty networks and LP domicile optimization.',
+    title: `${jurisdictionCount}-Jurisdiction Architecture`,
+    body: `Model fund structures across Cayman Islands, Luxembourg, Delaware, Singapore, Ireland, BVI, Cyprus, and ${jurisdictionCount - 7} additional domiciles. Every structure accounts for tax treaty networks and LP domicile optimization.`,
     footer: '→ View Coverage',
     href: '/coverage',
     icon: Globe,
@@ -16,7 +19,7 @@ const features = [
   },
   {
     title: 'GNCO Architect Engine',
-    body: 'Input your LP mix, GP domicile, fund size, and priorities. The Engine scores all 15 jurisdictions across 6 weighted criteria, models tax impact for up to 50 LPs, and generates your attorney brief in under 30 seconds.',
+    body: `Input your LP mix, GP domicile, fund size, and priorities. The Engine scores all ${jurisdictionCount} jurisdictions across 6 weighted criteria, models tax impact for up to 50 LPs, and generates your attorney brief in under 30 seconds.`,
     footer: '→ Try the Architect',
     href: '/architect',
     icon: Cpu,

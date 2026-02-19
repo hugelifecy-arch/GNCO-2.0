@@ -221,7 +221,7 @@ export function InstantCostCalculator() {
 
         <div className="mt-10 text-center">
           <button className="rounded-sm bg-accent-gold px-8 py-4 font-semibold text-bg-primary transition-all duration-200 hover:bg-accent-gold-light">
-            See Full 15-Jurisdiction Comparison →
+            {`See Full ${JURISDICTIONS.length}-Jurisdiction Comparison →`}
           </button>
           <p className="mt-4 text-sm text-text-tertiary">
             Or start the full Architect Engine to get personalized recommendations
