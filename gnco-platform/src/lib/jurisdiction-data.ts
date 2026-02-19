@@ -175,7 +175,7 @@ export const JURISDICTIONS: JurisdictionProfile[] = [
     formationCostRange: { min: 46000, max: 92000 },
     bestFor: ['Private equity and infrastructure structures', 'Managers targeting UK-linked LPs', 'Governance-focused institutional mandates'],
     notIdealFor: ['Very broad treaty planning', 'Teams needing extensive onshore substance incentives'],
-    coverageStatus: 'coming-soon',
+    coverageStatus: 'partial',
     keyServiceProviders: {
       administrators: ['Northern Trust', 'JTC', 'Apex Group'],
       lawFirms: ['Carey Olsen', 'Mourant', 'Collas Crill'],
@@ -244,7 +244,7 @@ export const JURISDICTIONS: JurisdictionProfile[] = [
     formationCostRange: { min: 46000, max: 92000 },
     bestFor: ['Greater China deal pipelines', 'Asia credit and growth equity', 'Managers with Hong Kong operating teams'],
     notIdealFor: ['US tax-exempt heavy investor pools without blocker planning', 'EU marketing-first strategies'],
-    coverageStatus: 'coming-soon',
+    coverageStatus: 'partial',
     keyServiceProviders: {
       administrators: ['Vistra', 'Tricor', 'HSBC Securities Services'],
       lawFirms: ['Deacons', 'Mayer Brown', 'Sidley Austin'],
@@ -267,7 +267,7 @@ export const JURISDICTIONS: JurisdictionProfile[] = [
     formationCostRange: { min: 27600, max: 55200 },
     bestFor: ['Africa- and India-linked investment corridors', 'Middle Eastern capital pools', 'Cost-aware cross-border structures'],
     notIdealFor: ['Broad EU institutional fundraising without additional structuring', 'Managers requiring top-tier global administrator depth'],
-    coverageStatus: 'coming-soon',
+    coverageStatus: 'partial',
     keyServiceProviders: {
       administrators: ['IQ-EQ Mauritius', 'Apex Group Mauritius', 'Intercontinental Trust'],
       lawFirms: ['BLC Robert & Associates', 'ENSafrica Mauritius', 'Appleby Mauritius'],
@@ -290,7 +290,7 @@ export const JURISDICTIONS: JurisdictionProfile[] = [
     formationCostRange: { min: 55200, max: 110400 },
     bestFor: ['EU-focused boutique managers', 'Alternative UCITS-adjacent strategies', 'Cost-conscious European structures'],
     notIdealFor: ['Mega-fund institutional first closes', 'Managers needing top-speed launch execution'],
-    coverageStatus: 'coming-soon',
+    coverageStatus: 'partial',
     keyServiceProviders: {
       administrators: ['Apex Group Malta', 'Alter Domus Malta', 'BOV Fund Services'],
       lawFirms: ['Camilleri Preziosi', 'Ganado Advocates', 'WH Partners'],
@@ -313,7 +313,7 @@ export const JURISDICTIONS: JurisdictionProfile[] = [
     formationCostRange: { min: 92000, max: 184000 },
     bestFor: ['High-governance institutional mandates', 'Swiss and DACH investor ecosystems', 'Long-duration real assets and private markets'],
     notIdealFor: ['First-time sub-$100m funds', 'Teams prioritizing low-cost administration'],
-    coverageStatus: 'coming-soon',
+    coverageStatus: 'partial',
     keyServiceProviders: {
       administrators: ['CACEIS Switzerland', 'Swissquote Fund Services', 'Société Générale Securities Services Switzerland'],
       lawFirms: ['Lenz & Staehelin', 'Bär & Karrer', 'Niederer Kraft Frey'],

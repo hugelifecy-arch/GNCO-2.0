@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "node scripts/run-tests.cjs",
     "lint": "next lint",
     "prisma:validate": "prisma validate"
   },
