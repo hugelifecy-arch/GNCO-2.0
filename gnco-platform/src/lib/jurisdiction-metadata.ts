@@ -104,6 +104,15 @@ export const JURISDICTION_METADATA: Record<string, JurisdictionMetadata> = {
       { label: 'Mauritius Revenue Authority', href: 'https://www.mra.mu/' }
     ]
   },
+
+  difc: {
+    lastUpdated: '2026-02-19',
+    sources: [
+      { label: 'Dubai Financial Services Authority (DFSA)', href: 'https://www.dfsa.ae/Regulated-Entities/Funds' },
+      { label: 'DIFC Registrar of Companies', href: 'https://www.difc.ae/business/setting-up/registrar-of-companies/' },
+      { label: 'UAE Federal Tax Authority', href: 'https://www.tax.gov.ae' }
+    ]
+  },
   uae: {
     lastUpdated: DEFAULT_UPDATED,
     sources: [
