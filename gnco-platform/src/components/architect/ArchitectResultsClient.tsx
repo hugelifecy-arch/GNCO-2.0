@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useMemo, useState } from 'react'
 
 import { COVERAGE_DATA } from '@/data/coverage'
+import { SERVICE_PROVIDERS } from '@/data/service-providers'
 import { generateRecommendations } from '@/lib/architect-logic'
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 import type { ArchitectBrief } from '@/lib/types'
@@ -67,6 +68,25 @@ export function ArchitectResultsClient() {
   }, [brief])
 
   const topPriorities = (brief?.priorities ?? []).slice(0, 3).map(formatPriority)
+
+
+  const recommendedProviders = useMemo(() => {
+    const topJurisdiction = topThree[0]
+    if (!topJurisdiction) return { jurisdictionLabel: null as string | null, administrators: [], auditors: [], legalCounsel: null as (typeof SERVICE_PROVIDERS)[number] | null }
+
+    const jurisdictionId = JURISDICTIONS.find((jurisdiction) => jurisdiction.name === topJurisdiction.jurisdiction)?.id
+    if (!jurisdictionId) return { jurisdictionLabel: topJurisdiction.jurisdiction, administrators: [], auditors: [], legalCounsel: null as (typeof SERVICE_PROVIDERS)[number] | null }
+
+    const forJurisdiction = SERVICE_PROVIDERS.filter((provider) => provider.jurisdictions.includes(jurisdictionId))
+    const administrators = forJurisdiction.filter((provider) => provider.type === 'Administrator').slice(0, 3)
+    const auditors = forJurisdiction.filter((provider) => provider.type === 'Auditor').slice(0, 2)
+    const legalCounsel =
+      forJurisdiction.find((provider) => provider.type === 'Legal Counsel' && provider.description.toLowerCase().includes('elp')) ??
+      forJurisdiction.find((provider) => provider.type === 'Legal Counsel') ??
+      null
+
+    return { jurisdictionLabel: topJurisdiction.jurisdiction, administrators, auditors, legalCounsel }
+  }, [topThree])
 
   const exportBriefPdf = async () => {
     if (!brief || !topThree[0]) return
@@ -190,6 +210,20 @@ export function ArchitectResultsClient() {
         </p>
       </section>
 
+
+      <section className="rounded-xl border border-bg-border bg-bg-surface p-6">
+        <h2 className="text-xl font-semibold">Recommended service providers</h2>
+        <p className="mt-2 text-sm text-text-secondary">
+          Recommended service providers for your {recommendedProviders.jurisdictionLabel ?? 'recommended'} structure:
+        </p>
+
+        <div className="mt-4 space-y-4">
+          <ProviderBucket title="Top administrators" providers={recommendedProviders.administrators} />
+          <ProviderBucket title="Top auditors" providers={recommendedProviders.auditors} />
+          <ProviderBucket title="Legal counsel specializing in ELP structures" providers={recommendedProviders.legalCounsel ? [recommendedProviders.legalCounsel] : []} />
+        </div>
+      </section>
+
       <section className="rounded-xl border border-bg-border bg-bg-surface p-6">
         <h2 className="text-xl font-semibold">Red flag engine (flag-only)</h2>
         <p className="mt-2 text-sm text-text-secondary">These are directional risk flags only and not legal, tax, or regulatory advice.</p>
@@ -232,5 +266,28 @@ function Slider({ label, value, onChange }: { label: string; value: number; onCh
       <span>{label}: {value}</span>
       <input type="range" min={0} max={100} value={value} onChange={(event) => onChange(Number(event.target.value))} className="w-full" />
     </label>
+  )
+}
+
+
+function ProviderBucket({ title, providers }: { title: string; providers: (typeof SERVICE_PROVIDERS) }) {
+  return (
+    <div>
+      <h3 className="text-sm font-semibold text-text-primary">{title}</h3>
+      {providers.length ? (
+        <ul className="mt-2 space-y-2">
+          {providers.map((provider) => (
+            <li key={provider.id} className="flex items-center justify-between rounded-md border border-bg-border px-3 py-2 text-sm">
+              <span>{provider.name}</span>
+              <Link href={`/providers/${provider.id}?intro=1`} className="text-accent-gold">
+                Request Introduction →
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-2 text-sm text-text-secondary">No providers available yet for this category.</p>
+      )}
+    </div>
   )
 }
