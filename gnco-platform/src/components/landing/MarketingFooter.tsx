@@ -10,7 +10,7 @@ export function MarketingFooter() {
             <span className="font-serif text-2xl text-accent-gold">GNCO</span>
           </div>
           <p className="text-sm text-text-secondary">Global Fund Architecture for Family Offices</p>
-          <p className="text-sm text-text-tertiary">© 2026 GNCO. All rights reserved.</p>
+          <p className="text-sm text-text-tertiary">© 2026 GNCO Ltd. All rights reserved.</p>
         </div>
 
         <div className="space-y-2">

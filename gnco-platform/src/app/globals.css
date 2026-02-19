@@ -85,10 +85,11 @@ body {
 }
 
 .beta-badge {
-  color: #8a96ab;
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
+  margin-left: 4px;
+  opacity: 0.6;
   text-transform: uppercase;
   vertical-align: super;
 }

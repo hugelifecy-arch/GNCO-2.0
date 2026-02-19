@@ -16,7 +16,7 @@ export function RequestAccessCTA() {
       >
         <div className="mb-4 flex items-center justify-center gap-2">
           <div className="h-2 w-2 animate-pulse rounded-full bg-accent-green" />
-          <p className="text-sm text-text-secondary">Join our open beta →</p>
+          <p className="text-sm text-text-secondary">Start modeling in minutes →</p>
         </div>
         <h2 className="mt-4 font-serif text-4xl text-text-primary">Start Using GNCO Today</h2>
         <p className="mt-5 text-text-secondary">
