@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import DataFreshnessBanner from '@/components/DataFreshnessBanner'
 import { getCoverageBySlug } from '@/data/coverage'
 
 export default function CoverageDetailPage({ params }: { params: { slug: string } }) {
@@ -18,6 +19,12 @@ export default function CoverageDetailPage({ params }: { params: { slug: string 
 
       <section className="rounded-xl border border-bg-border bg-bg-surface p-6">
         <h1 className="font-serif text-4xl">{coverage.name}</h1>
+        <div className="mt-4">
+          <DataFreshnessBanner
+            lastVerifiedDate={coverage.lastVerifiedDate}
+            jurisdictionName={coverage.name}
+          />
+        </div>
         <p className="mt-4 text-sm text-text-secondary">Formation cost range: {coverage.formationCostRange}</p>
         <p className="text-sm text-text-secondary">Formation timeline: {coverage.timelineRange}</p>
       </section>

@@ -13,6 +13,7 @@ export interface CoverageJurisdiction {
   sourceTypes: string[]
   lastUpdated: string
   confidence: CoverageConfidence
+  lastVerifiedDate: string
   changeLog?: { date: string; note: string }[]
 }
 
@@ -38,6 +39,7 @@ export const COVERAGE_DATA: CoverageJurisdiction[] = JURISDICTIONS.map((jurisdic
   sourceTypes: [...sourceTypesByStatus[jurisdiction.coverageStatus]],
   lastUpdated: JURISDICTION_METADATA[jurisdiction.id]?.lastUpdated ?? '2026-02-18',
   confidence: confidenceByStatus[jurisdiction.coverageStatus],
+  lastVerifiedDate: JURISDICTION_METADATA[jurisdiction.id]?.last_verified_date ?? '2026-02-18',
   changeLog: [
     {
       date: JURISDICTION_METADATA[jurisdiction.id]?.lastUpdated ?? '2026-02-18',
