@@ -39,7 +39,6 @@ export function MarketingFooter() {
           <p className="text-sm text-text-tertiary">No credit card required.</p>
         </div>
       </div>
-
     </footer>
   )
 }
