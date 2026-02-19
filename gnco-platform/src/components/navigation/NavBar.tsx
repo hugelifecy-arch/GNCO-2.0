@@ -32,7 +32,7 @@ export function NavBar() {
           <Link href="/" className="flex items-center gap-2">
             <span className="text-base leading-none text-accent-gold">◆</span>
             <span className="font-serif text-[20px] font-bold text-accent-gold">GNCO</span>
-            <span className="rounded-full border border-accent-gold/30 bg-accent-gold/10 px-2 py-0.5 font-sans text-[10px] font-medium tracking-wider text-accent-gold">
+            <span className="badge rounded-full border border-bg-border bg-bg-elevated px-2 py-0.5 font-sans text-[10px] font-medium tracking-wider text-text-tertiary">
               BETA
             </span>
           </Link>
