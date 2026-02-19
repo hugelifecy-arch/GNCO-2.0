@@ -1,7 +1,7 @@
 import { JURISDICTION_METADATA } from '@/lib/jurisdiction-metadata'
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 
-export type CoverageConfidence = 'High'
+export type CoverageConfidence = 'High' | 'Med' | 'Low'
 
 export interface CoverageJurisdiction {
   name: string
@@ -20,10 +20,14 @@ export interface CoverageJurisdiction {
 
 const confidenceByStatus = {
   full: 'High',
+  partial: 'High',
+  'coming-soon': 'High',
 } as const
 
 const sourceTypesByStatus = {
   full: ['regulator guidance', 'public fee schedule', 'law firm briefing', 'administrator quote'],
+  partial: ['regulator guidance', 'public fee schedule', 'law firm briefing', 'administrator quote'],
+  'coming-soon': ['regulator guidance', 'public fee schedule', 'law firm briefing', 'administrator quote'],
 } as const
 
 export const COVERAGE_DATA: CoverageJurisdiction[] = JURISDICTIONS.map((jurisdiction) => ({
