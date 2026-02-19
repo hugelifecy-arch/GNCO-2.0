@@ -228,3 +228,15 @@ export interface AccessRequest {
   submittedAt: string
   status: 'pending' | 'approved' | 'declined'
 }
+
+export interface RegulatoryUpdate {
+  id: string
+  jurisdiction_id: string
+  title: string
+  summary: string
+  impact_level: 'HIGH' | 'MEDIUM' | 'LOW'
+  effective_date: string
+  affects_vehicle_types: string[]
+  source_url: string
+  created_at: string
+}

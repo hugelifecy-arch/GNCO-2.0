@@ -3,6 +3,7 @@ import { FundAllocationChart } from '@/components/dashboard/FundAllocationChart'
 import { KPIStrip } from '@/components/dashboard/KPIStrip'
 import { PerformanceChart } from '@/components/dashboard/PerformanceChart'
 import { RecentDocuments } from '@/components/dashboard/RecentDocuments'
+import { DashboardRegulatoryBadge } from '@/components/regulatory/DashboardRegulatoryBadge'
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary'
 import {
   MOCK_CAPITAL_CALLS,
@@ -19,6 +20,7 @@ export default function DashboardPage() {
 
   return (
     <main className="space-y-6 p-6 lg:p-8">
+      <DashboardRegulatoryBadge />
       <ErrorBoundary>
         <KPIStrip
           totalAUM={MOCK_KPI_SUMMARY.totalAUM}

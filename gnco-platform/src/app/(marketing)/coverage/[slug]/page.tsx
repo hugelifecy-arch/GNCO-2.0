@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 
 import CitationsList from '@/components/CitationsList'
 import DataFreshnessBanner from '@/components/DataFreshnessBanner'
+import { RegulatoryAlertBanner } from '@/components/regulatory/RegulatoryAlertBanner'
 import { getCoverageBySlug } from '@/data/coverage'
 
 export default function CoverageDetailPage({ params }: { params: { slug: string } }) {
@@ -14,6 +15,8 @@ export default function CoverageDetailPage({ params }: { params: { slug: string 
 
   return (
     <main className="mx-auto max-w-5xl space-y-6 px-6 py-14">
+      <RegulatoryAlertBanner jurisdictionId={coverage.slug} />
+
       <Link href="/coverage" className="text-sm text-accent-gold">
         ← Back to coverage
       </Link>

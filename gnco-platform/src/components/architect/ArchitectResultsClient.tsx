@@ -1,11 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { COVERAGE_DATA } from '@/data/coverage'
 import { generateRecommendations } from '@/lib/architect-logic'
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
+import { saveStructure } from '@/lib/regulatory-updates-storage'
 import type { ArchitectBrief } from '@/lib/types'
 
 const WIZARD_STORAGE_KEY = 'gnco:architect-brief'
@@ -67,6 +68,19 @@ export function ArchitectResultsClient() {
   }, [brief])
 
   const topPriorities = (brief?.priorities ?? []).slice(0, 3).map(formatPriority)
+
+  useEffect(() => {
+    const topStructure = topThree[0]
+    if (!topStructure) return
+
+    saveStructure({
+      id: `${topStructure.jurisdiction}-${topStructure.vehicleType}`.toLowerCase().replaceAll(' ', '-'),
+      jurisdiction_id: topStructure.jurisdiction.toLowerCase().replaceAll(' ', '-'),
+      vehicle_type: topStructure.vehicleType,
+      created_at: new Date().toISOString(),
+      last_viewed_regulatory_at: new Date(0).toISOString(),
+    })
+  }, [topThree])
 
   const exportBriefPdf = async () => {
     if (!brief || !topThree[0]) return
