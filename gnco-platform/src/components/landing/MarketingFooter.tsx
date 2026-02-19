@@ -18,13 +18,8 @@ export function MarketingFooter() {
           <FooterLink href="/architect">Architect Engine</FooterLink>
           <FooterLink href="/coverage">Coverage</FooterLink>
           <FooterLink href="/methodology">Methodology</FooterLink>
-codex/clean-up-beta-branding-on-homepage
           <FooterLink href="/#pricing">Pricing</FooterLink>
           <FooterLink href="/architect">Start Free →</FooterLink>
-
-          <FooterLink href="/methodology">Pricing</FooterLink>
-          <FooterLink href="/architect">Start Free</FooterLink>
- main
         </div>
 
         <div className="space-y-2">
