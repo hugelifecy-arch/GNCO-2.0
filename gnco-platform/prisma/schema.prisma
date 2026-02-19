@@ -132,3 +132,51 @@ model AuditLog {
 
   @@map("audit_logs")
 }
+
+
+enum RegulatoryAlertSeverity {
+  low
+  medium
+  high
+  critical
+}
+
+enum RegulatoryAlertStatus {
+  draft
+  published
+  archived
+}
+
+model RegulatoryAlert {
+  id             String                  @id @default(cuid())
+  jurisdictionId String
+  jurisdiction   String
+  title          String
+  whatChanged    String
+  whyItMatters   String
+  checklist      Json
+  status         RegulatoryAlertStatus   @default(draft)
+  severity       RegulatoryAlertSeverity @default(medium)
+  effectiveDate  DateTime?
+  publishedAt    DateTime?
+  createdBy      String?
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  sources        RegulatoryAlertSource[]
+
+  @@index([jurisdictionId, status])
+  @@index([publishedAt])
+  @@map("regulatory_alerts")
+}
+
+model RegulatoryAlertSource {
+  id        String          @id @default(cuid())
+  alertId   String
+  label     String
+  href      String
+  createdAt DateTime        @default(now())
+  alert     RegulatoryAlert @relation(fields: [alertId], references: [id], onDelete: Cascade)
+
+  @@index([alertId])
+  @@map("regulatory_alert_sources")
+}
