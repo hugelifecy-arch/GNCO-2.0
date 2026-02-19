@@ -9,5 +9,5 @@ export function LayoutPageFrame({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isAppRoute = APP_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix))
 
-  return <div className={cn('pb-9', !isAppRoute && 'pt-16')}>{children}</div>
+  return <div className={cn('pb-9', !isAppRoute && 'pt-24')}>{children}</div>
 }

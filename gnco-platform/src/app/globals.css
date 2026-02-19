@@ -84,6 +84,16 @@ body {
   box-shadow: 0 0 24px rgba(59, 130, 246, 0.15);
 }
 
+.beta-badge {
+  color: #8a96ab;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  vertical-align: super;
+}
+
+
 @media print {
   .disclosures-print-root {
     background: #ffffff !important;
