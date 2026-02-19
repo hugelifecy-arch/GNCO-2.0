@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 import { MobileNav } from '@/components/navigation/MobileNav'
 
 const navLinks = [
-  { label: 'Platform', href: '/' },
+  { label: 'Platform', href: '/architect' },
   { label: 'Coverage', href: '/coverage' },
   { label: 'Methodology', href: '/methodology' },
   { label: 'Disclosures', href: '/disclosures' },
