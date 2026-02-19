@@ -6,16 +6,17 @@ import { usePathname } from 'next/navigation'
 import {
   ArrowUpDown,
   Brain,
+  CalendarClock,
   Cpu,
   FileText,
   FolderOpen,
+  Handshake,
   LayoutDashboard,
   Radar,
-  ShieldAlert,
   Settings,
+  ShieldAlert,
   TrendingUp,
   Users,
-  Handshake,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -34,7 +35,10 @@ type NavSection = {
 const navSections: NavSection[] = [
   {
     title: 'Overview',
-    items: [{ label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard }],
+    items: [
+      { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+      { label: 'Compliance Calendar', href: '/dashboard/compliance', icon: CalendarClock },
+    ],
   },
   {
     title: 'Module 1 — Architect',

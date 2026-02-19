@@ -1,10 +1,4 @@
-import { JURISDICTIONS } from '../lib/jurisdiction-data'
-import { JURISDICTION_METADATA } from '../lib/jurisdiction-metadata'
-
-const jurisdictions = JURISDICTIONS.map((jurisdiction) => ({
-  ...jurisdiction,
-  ...JURISDICTION_METADATA[jurisdiction.id],
-}))
+import { JURISDICTIONS_CANONICAL as jurisdictions } from '../data/jurisdictions'
 
 describe('Jurisdiction Data Integrity', () => {
   test('exactly 15 jurisdictions exist', () => {
@@ -58,6 +52,22 @@ describe('Jurisdiction Data Integrity', () => {
 
       jurisdiction.citations.forEach((citation) => {
         expect(citation.url).toMatch(/^https?:\/\//)
+      })
+    })
+  })
+
+
+  test('all jurisdictions include compliance obligations', () => {
+    jurisdictions.forEach((jurisdiction) => {
+      expect(Array.isArray(jurisdiction.compliance_obligations)).toBe(true)
+      expect(jurisdiction.compliance_obligations.length).toBeGreaterThanOrEqual(1)
+
+      jurisdiction.compliance_obligations.forEach((obligation) => {
+        expect(obligation.obligation).toBeTruthy()
+        expect(obligation.frequency).toBeTruthy()
+        expect(obligation.typical_deadline).toBeTruthy()
+        expect(obligation.consequence_of_miss).toBeTruthy()
+        expect(Array.isArray(obligation.applies_to)).toBe(true)
       })
     })
   })
