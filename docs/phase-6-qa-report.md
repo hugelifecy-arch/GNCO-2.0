@@ -84,3 +84,26 @@ Performed viewport checks at 375px, 768px, and 1440px.
 3. Update landing hero/stat strings to required **15 / 52** values.
 4. Validate architect flow controls and recommendations end-to-end against acceptance criteria.
 5. Re-run full QA matrix after fixes, then deploy and perform live-site verification.
+
+## 6H. Canonical 15-jurisdiction list (updated)
+
+The canonical 15-jurisdiction list is now:
+
+1. Cayman Islands
+2. Luxembourg
+3. Delaware, USA
+4. Singapore
+5. Ireland
+6. BVI
+7. Jersey
+8. Guernsey
+9. Netherlands
+10. United Kingdom
+11. Hong Kong
+12. Mauritius
+13. Malta
+14. Switzerland
+15. Cyprus
+
+Change note: **Cyprus replaces DIFC** in the canonical 15 list to match homepage messaging and product positioning.
+
