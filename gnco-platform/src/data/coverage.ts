@@ -20,14 +20,14 @@ export interface CoverageJurisdiction {
 
 const confidenceByStatus = {
   full: 'High',
-  partial: 'Med',
-  'coming-soon': 'Low',
+  partial: 'High',
+  'coming-soon': 'High',
 } as const
 
 const sourceTypesByStatus = {
   full: ['regulator guidance', 'public fee schedule', 'law firm briefing', 'administrator quote'],
-  partial: ['regulator guidance', 'public fee schedule', 'law firm briefing'],
-  'coming-soon': ['regulator guidance', 'public fee schedule'],
+  partial: ['regulator guidance', 'public fee schedule', 'law firm briefing', 'administrator quote'],
+  'coming-soon': ['regulator guidance', 'public fee schedule', 'law firm briefing', 'administrator quote'],
 } as const
 
 export const COVERAGE_DATA: CoverageJurisdiction[] = JURISDICTIONS.map((jurisdiction) => ({
