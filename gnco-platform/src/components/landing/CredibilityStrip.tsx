@@ -7,7 +7,7 @@ export function CredibilityStrip() {
             <div className="h-2 w-2 animate-pulse rounded-full bg-accent-green" />
             <div className="absolute inset-0 h-2 w-2 animate-ping rounded-full bg-accent-green opacity-75" />
           </div>
-          <p className="text-sm text-text-secondary">Join practitioners building with GNCO →</p>
+          <p className="text-sm text-text-secondary">Join our open beta →</p>
         </div>
 
         <p className="mb-6 text-center text-xs uppercase tracking-[0.2em] text-text-tertiary">Designed for practitioners across</p>
@@ -30,9 +30,7 @@ export function CredibilityStrip() {
         </div>
 
         <div className="mx-auto mt-10 max-w-3xl text-center">
-          <p className="font-serif text-2xl text-accent-gold">
-            Under 30 minutes from intake to recommendation
-          </p>
+          <p className="font-serif text-2xl text-accent-gold">Under 30 minutes</p>
         </div>
       </div>
     </section>
