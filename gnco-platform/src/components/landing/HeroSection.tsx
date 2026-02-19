@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 
 const headlineWords = "Architect the World's Most Sophisticated Fund Structures.".split(' ')
@@ -14,73 +13,8 @@ const stats = [
 ]
 
 function StatsStrip() {
-  const [isVisible, setIsVisible] = useState(false)
-  const [counts, setCounts] = useState(stats.map(() => 0))
-  const sectionRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.3 },
-    )
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
-    }
-
-    return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
-    if (!isVisible) return
-
-    const timers: Array<ReturnType<typeof setInterval>> = []
-
-    stats.forEach((stat, index) => {
-      if (stat.isText) {
-        setCounts((prev) => {
-          const newCounts = [...prev]
-          newCounts[index] = stat.value
-          return newCounts
-        })
-        return
-      }
-
-      let current = 0
-      const increment = stat.value / 60
-      const timer = setInterval(() => {
-        current += increment
-        if (current >= stat.value) {
-          setCounts((prev) => {
-            const newCounts = [...prev]
-            newCounts[index] = stat.value
-            return newCounts
-          })
-          clearInterval(timer)
-        } else {
-          setCounts((prev) => {
-            const newCounts = [...prev]
-            newCounts[index] = Math.floor(current)
-            return newCounts
-          })
-        }
-      }, 16)
-
-      timers.push(timer)
-    })
-
-    return () => {
-      timers.forEach((timer) => clearInterval(timer))
-    }
-  }, [isVisible])
-
   return (
-    <div ref={sectionRef} className="mt-16 flex items-center justify-center gap-12 md:gap-16">
+    <div className="mt-16 flex items-center justify-center gap-12 md:gap-16">
       {stats.map((stat, index) => (
         <div key={index} className="text-center">
           {stat.isText ? (
@@ -90,10 +24,17 @@ function StatsStrip() {
             </>
           ) : (
             <>
-              <div className="font-serif text-4xl font-bold text-accent-gold md:text-5xl">
-                {counts[index]}
+              <motion.div
+                className="font-serif text-4xl font-bold text-accent-gold md:text-5xl"
+                aria-label={`${stat.value} ${stat.label.toLowerCase()}`}
+                initial={{ opacity: 0.7, scale: 0.98 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{ duration: 0.45, ease: 'easeOut' }}
+              >
+                {stat.value}
                 {stat.suffix}
-              </div>
+              </motion.div>
               <p className="mt-2 text-sm font-sans text-text-secondary">{stat.label}</p>
             </>
           )}
