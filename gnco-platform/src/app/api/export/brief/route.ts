@@ -15,6 +15,12 @@ const exportPayloadSchema = z.object({
   entities: z.array(z.string().min(2)).min(1),
   assumptions: z.array(z.string().min(3)).min(1),
   sources: z.array(z.object({ label: z.string().min(2), href: z.string().url() })).min(1),
+  diagram: z.object({
+    template: z.string().min(3),
+    nodeCount: z.number().int().nonnegative(),
+    edgeCount: z.number().int().nonnegative(),
+    exportedAt: z.string().min(8),
+  }).optional(),
   questionsForCounsel: z.array(z.string().min(3)).min(1),
   disclaimer: z.string().min(8),
 })
@@ -27,15 +33,22 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, message: 'Invalid export payload.', issues: parsed.error.flatten() }, { status: 400 })
   }
 
-  const { title, date, selectedStructure, entities, assumptions, sources, questionsForCounsel, disclaimer } = parsed.data
+  const { title, date, selectedStructure, entities, assumptions, sources, questionsForCounsel, diagram, disclaimer } = parsed.data
 
   const pdfBuffer = buildSimplePdf(title, date, [
     {
-      heading: 'Structure Diagram Placeholder',
-      lines: [
-        `GP -> ${selectedStructure.vehicleType} (${selectedStructure.jurisdiction}) -> LPs`,
-        'Simple box-list placeholder included in this Phase 1 PDF export.',
-      ],
+      heading: 'Structure Diagram',
+      lines: diagram
+        ? [
+            `Template: ${diagram.template}`,
+            `Nodes: ${diagram.nodeCount} | Connections: ${diagram.edgeCount}`,
+            `Snapshot saved at: ${diagram.exportedAt}`,
+            `GP -> ${selectedStructure.vehicleType} (${selectedStructure.jurisdiction}) -> LPs`,
+          ]
+        : [
+            `GP -> ${selectedStructure.vehicleType} (${selectedStructure.jurisdiction}) -> LPs`,
+            'No interactive diagram snapshot was attached to this export.',
+          ],
     },
     {
       heading: 'Entity List',

@@ -6,6 +6,7 @@ import { useMemo, useState } from 'react'
 import { COVERAGE_DATA } from '@/data/coverage'
 import { generateRecommendations } from '@/lib/architect-logic'
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
+import { STRUCTURE_DIAGRAM_STORAGE_KEY, type StructureDiagramSnapshot } from '@/lib/structure-diagram'
 import type { ArchitectBrief } from '@/lib/types'
 
 const WIZARD_STORAGE_KEY = 'gnco:architect-brief'
@@ -50,9 +51,23 @@ function formatPriority(priority: string) {
   return priority.replaceAll('-', ' ')
 }
 
+function getSavedDiagram(): StructureDiagramSnapshot | null {
+  if (typeof window === 'undefined') return null
+
+  const raw = window.localStorage.getItem(STRUCTURE_DIAGRAM_STORAGE_KEY)
+  if (!raw) return null
+
+  try {
+    return JSON.parse(raw) as StructureDiagramSnapshot
+  } catch {
+    return null
+  }
+}
+
 export function ArchitectResultsClient() {
   const [brief] = useState<Partial<ArchitectBrief> | null>(() => getSavedBrief())
   const [tradeoffs, setTradeoffs] = useState({ cost: 50, time: 50, familiarity: 50, taxFriction: 50 })
+  const [diagram] = useState<StructureDiagramSnapshot | null>(() => getSavedDiagram())
   const [exporting, setExporting] = useState(false)
   const [exportMessage, setExportMessage] = useState<string | null>(null)
 
@@ -115,6 +130,14 @@ export function ArchitectResultsClient() {
           'Are there blocker, feeder, or treaty enhancements required for this LP mix?',
           'Which local legal opinions and filing steps are critical for first close?',
         ],
+        diagram: diagram
+          ? {
+              template: diagram.template,
+              nodeCount: diagram.nodeCount,
+              edgeCount: diagram.edgeCount,
+              exportedAt: diagram.exportedAt,
+            }
+          : undefined,
         disclaimer:
           'This brief is for informational planning only and does not constitute legal, tax, regulatory, investment, or brokerage advice.',
       }),
@@ -199,6 +222,8 @@ export function ArchitectResultsClient() {
           ))}
         </ul>
       </section>
+
+      <p className="text-xs text-text-secondary">{diagram ? `Diagram template attached: ${diagram.template}` : 'No saved structure diagram detected. Build one at /architect/structure to include in PDF.'}</p>
 
       {BRIEF_EXPORT_ENABLED ? (
         <div className="space-y-2">
