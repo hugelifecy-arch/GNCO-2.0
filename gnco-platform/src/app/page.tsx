@@ -1,4 +1,4 @@
-'use client'
+import type { Metadata } from 'next'
 
 import { useEffect, useState } from 'react'
 
@@ -11,8 +11,15 @@ import { PartnerStrip } from '@/components/landing/PartnerStrip'
 import { RequestAccessCTA } from '@/components/landing/RequestAccessCTA'
 import { MarketingFooter } from '@/components/landing/MarketingFooter'
 
+codex/update-homepage-stats-for-accuracy
 type MarketingStatsResponse = {
   openBetaPractitionerCount: number | null
+
+export const metadata: Metadata = {
+  title: 'GNCO — Global Fund Architect | Institutional Fund Structure Modeling',
+  description:
+    'Model, compare, and optimize fund structures across 15 jurisdictions. Built for family offices, GPs, and fund architects. Free during open beta.',
+ main
 }
 
 export default function HomePage() {

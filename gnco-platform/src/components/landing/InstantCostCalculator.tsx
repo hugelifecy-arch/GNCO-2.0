@@ -1,15 +1,32 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import Link from 'next/link'
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 import { trackEvent } from '@/lib/analytics'
 import { formatCurrency } from '@/lib/utils'
 
-type FundStrategy =
-  | 'private-equity'
-  | 'real-estate'
-  | 'venture-capital'
-  | 'private-credit'
+type FundStrategy = 'private-equity' | 'real-estate' | 'venture-capital' | 'private-credit'
+
+const PREVIEW_JURISDICTIONS = ['ireland', 'bvi', 'jersey'] as const
+
+const BASE_SCORES: Record<string, number> = {
+  ireland: 87,
+  bvi: 72,
+  jersey: 79,
+  'cayman-islands': 89,
+  luxembourg: 82,
+  'delaware-usa': 87,
+  singapore: 85,
+  cyprus: 83,
+}
+
+const STRATEGY_LABEL: Record<FundStrategy, string> = {
+  'private-equity': 'PE',
+  'real-estate': 'Real Estate',
+  'venture-capital': 'Venture Capital',
+  'private-credit': 'Private Credit',
+}
 
 export function InstantCostCalculator() {
   const [fundSize, setFundSize] = useState(100)
@@ -44,50 +61,54 @@ export function InstantCostCalculator() {
   }
 
   const topJurisdictions = useMemo(() => {
-    const scored = JURISDICTIONS.map((j) => {
-      let formationCost = (j.formationCostRange.min + j.formationCostRange.max) / 2
+    const scoredById = new Map(
+      JURISDICTIONS.map((j) => {
+        let formationCost = (j.formationCostRange.min + j.formationCostRange.max) / 2
 
-      const strategyMultiplier: Record<FundStrategy, number> = {
-        'private-equity': 1,
-        'real-estate': 1.08,
-        'venture-capital': 0.94,
-        'private-credit': 1.12,
-      }
+        const strategyMultiplier: Record<FundStrategy, number> = {
+          'private-equity': 1,
+          'real-estate': 1.08,
+          'venture-capital': 0.94,
+          'private-credit': 1.12,
+        }
 
-      formationCost *= strategyMultiplier[strategy]
+        formationCost *= strategyMultiplier[strategy]
 
-      if (fundSize > 250) formationCost *= 1.3
-      if (fundSize > 500) formationCost *= 1.5
+        if (fundSize > 250) formationCost *= 1.3
+        if (fundSize > 500) formationCost *= 1.5
 
-      formationCost += (lpCount - 10) * 500
+        formationCost += (lpCount - 10) * 500
 
-      let annualCost = (j.annualCostRange.min + j.annualCostRange.max) / 2
-      annualCost *= strategyMultiplier[strategy]
-      if (fundSize > 250) annualCost *= 1.2
+        let annualCost = (j.annualCostRange.min + j.annualCostRange.max) / 2
+        annualCost *= strategyMultiplier[strategy]
+        if (fundSize > 250) annualCost *= 1.2
 
-      const totalYear1 = formationCost + annualCost
+        const totalYear1 = formationCost + annualCost
 
-      let score = 100
-      if (j.id === 'cayman' || j.id === 'cayman-islands') score = 89
-      if (j.id === 'luxembourg') score = 82
-      if (j.id === 'delaware' || j.id === 'delaware-usa') score = 87
-      if (j.id === 'singapore') score = 85
-      if (j.id === 'cyprus') score = 83
+        const score = BASE_SCORES[j.id] ?? 75
 
-      return {
-        id: j.id,
-        name: j.name,
-        flag: j.flag,
-        formationCost: Math.round(formationCost),
-        annualCost: Math.round(annualCost),
-        totalYear1: Math.round(totalYear1),
-        score,
-        timeline: `${j.setupTimeWeeks.min}-${j.setupTimeWeeks.max} weeks`,
-      }
-    })
+        return [
+          j.id,
+          {
+            id: j.id,
+            name: j.name,
+            flag: j.flag,
+            formationCost: Math.round(formationCost),
+            annualCost: Math.round(annualCost),
+            totalYear1: Math.round(totalYear1),
+            score,
+            timeline: `${j.setupTimeWeeks.min}-${j.setupTimeWeeks.max} weeks`,
+          },
+        ] as const
+      })
+    )
 
-    return scored.sort((a, b) => b.score - a.score).slice(0, 3)
+    return PREVIEW_JURISDICTIONS.map((jurisdictionId) => scoredById.get(jurisdictionId)).filter(
+      (jurisdiction): jurisdiction is NonNullable<typeof jurisdiction> => Boolean(jurisdiction)
+    )
   }, [fundSize, lpCount, strategy])
+
+  const scoreContext = `Score based on: ${STRATEGY_LABEL[strategy]} strategy, €${fundSize}M fund, ${lpCount} LPs`
 
   return (
     <section id="pricing" className="w-full border-y border-bg-border bg-bg-surface py-20">
@@ -105,9 +126,7 @@ export function InstantCostCalculator() {
           <div className="grid gap-8 md:grid-cols-2">
             <div>
               <div className="mb-3 flex items-baseline justify-between">
-                <label className="font-sans text-sm text-text-secondary">
-                  Target Fund Size
-                </label>
+                <label className="font-sans text-sm text-text-secondary">Target Fund Size</label>
                 <span className="font-serif text-2xl text-accent-gold">€{fundSize}M</span>
               </div>
               <input
@@ -127,9 +146,7 @@ export function InstantCostCalculator() {
 
             <div>
               <div className="mb-3 flex items-baseline justify-between">
-                <label className="font-sans text-sm text-text-secondary">
-                  Number of LPs
-                </label>
+                <label className="font-sans text-sm text-text-secondary">Number of LPs</label>
                 <span className="font-serif text-2xl text-accent-gold">{lpCount}</span>
               </div>
               <input
@@ -214,17 +231,26 @@ export function InstantCostCalculator() {
                     style={{ width: `${j.score}%` }}
                   />
                 </div>
+                <p className="mt-2 text-xs text-text-tertiary">{scoreContext}</p>
               </div>
             </div>
           ))}
         </div>
 
         <div className="mt-10 text-center">
-          <button className="rounded-sm bg-accent-gold px-8 py-4 font-semibold text-bg-primary transition-all duration-200 hover:bg-accent-gold-light">
+          <Link
+            href="/coverage"
+            className="inline-block rounded-sm bg-accent-gold px-8 py-4 font-semibold text-bg-primary transition-all duration-200 hover:bg-accent-gold-light"
+          >
             {`See Full ${JURISDICTIONS.length}-Jurisdiction Comparison →`}
-          </button>
+          </Link>
           <p className="mt-4 text-sm text-text-tertiary">
             Or start the full Architect Engine to get personalized recommendations
+          </p>
+          <p className="mx-auto mt-5 max-w-3xl text-sm text-text-secondary">
+            Cost estimates last verified: February 19, 2026. Actual costs vary by service provider,
+            fund complexity, and negotiated fees. Consult qualified counsel for binding cost
+            estimates.
           </p>
         </div>
       </div>
