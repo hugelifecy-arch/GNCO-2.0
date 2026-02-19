@@ -111,7 +111,7 @@ export function InstantCostCalculator() {
   const scoreContext = `Score based on: ${STRATEGY_LABEL[strategy]} strategy · €${fundSize}M fund · ${lpCount} LPs · default LP mix`
 
   return (
-    <section id="pricing" className="w-full border-y border-bg-border bg-bg-surface py-20">
+    <section id="cost-calculator" className="w-full border-y border-bg-border bg-bg-surface py-20">
       <div className="mx-auto max-w-5xl px-6">
         <div className="mb-10 text-center">
           <h2 className="mb-4 font-serif text-4xl text-text-primary md:text-5xl">

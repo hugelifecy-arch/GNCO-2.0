@@ -6,6 +6,7 @@ import { FeatureCards } from '@/components/landing/FeatureCards'
 import { InstantCostCalculator } from '@/components/landing/InstantCostCalculator'
 import { HowItWorks } from '@/components/landing/HowItWorks'
 import { PartnerStrip } from '@/components/landing/PartnerStrip'
+import { PricingSection } from '@/components/landing/PricingSection'
 import { RequestAccessCTA } from '@/components/landing/RequestAccessCTA'
 import { MarketingFooter } from '@/components/landing/MarketingFooter'
 
@@ -25,6 +26,7 @@ export default function HomePage() {
         <FeatureCards />
         <PartnerStrip />
         <HowItWorks />
+        <PricingSection />
         <RequestAccessCTA />
       </main>
       <MarketingFooter />
