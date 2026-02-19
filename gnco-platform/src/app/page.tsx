@@ -27,6 +27,16 @@ async function getOpenBetaPractitionerCount() {
 export default async function HomePage() {
   const openBetaPractitionerCount = await getOpenBetaPractitionerCount()
 
+codex/update-homepage-stats-for-accuracy-djf9fi
+
+export const metadata: Metadata = {
+  title: 'GNCO — Global Fund Architect | Institutional Fund Structure Modeling',
+  description:
+    'Model, compare, and optimize fund structures across 15 jurisdictions. Built for family offices, GPs, and fund architects. Free during open beta.',
+}
+
+export default function HomePage() {
+ main
   return (
     <>
       <main className="bg-bg-primary text-text-primary">
