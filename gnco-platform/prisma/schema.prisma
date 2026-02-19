@@ -134,16 +134,29 @@ model AuditLog {
 }
 
 
+
+
+enum RegulatoryImpactLevel {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum RegulatoryUpdateStatus {
+  DRAFT
+  PUBLISHED
+}
+
 model RegulatoryUpdate {
   id                  String   @id @default(cuid())
   jurisdictionId      String
   title               String
   summary             String
-  impactLevel         String
+  impactLevel         RegulatoryImpactLevel
   effectiveDate       DateTime
   affectsVehicleTypes String[]
   sourceUrl           String
-  status              String   @default("draft")
+  status              RegulatoryUpdateStatus @default(DRAFT)
   createdAt           DateTime @default(now())
 
   @@map("regulatory_updates")
