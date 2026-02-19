@@ -238,5 +238,6 @@ export interface RegulatoryUpdate {
   effective_date: string
   affects_vehicle_types: string[]
   source_url: string
+  status: 'DRAFT' | 'PUBLISHED'
   created_at: string
 }
