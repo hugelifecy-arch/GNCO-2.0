@@ -7,9 +7,7 @@ export function CredibilityStrip() {
             <div className="h-2 w-2 animate-pulse rounded-full bg-accent-green" />
             <div className="absolute inset-0 h-2 w-2 animate-ping rounded-full bg-accent-green opacity-75" />
           </div>
-          <p className="text-sm text-text-secondary">
-            <span className="font-semibold text-accent-gold">27 fund managers</span> actively using GNCO
-          </p>
+          <p className="text-sm text-text-secondary">Join practitioners in open beta →</p>
         </div>
 
         <p className="mb-6 text-center text-xs uppercase tracking-[0.2em] text-text-tertiary">Designed for practitioners across</p>
@@ -31,19 +29,10 @@ export function CredibilityStrip() {
           ))}
         </div>
 
-        <div className="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="text-center">
-            <div className="font-serif text-2xl text-accent-gold">€850M</div>
-            <div className="mt-1 text-xs text-text-tertiary">Total AUM Structured</div>
-          </div>
-          <div className="text-center">
-            <div className="font-serif text-2xl text-accent-gold">12</div>
-            <div className="mt-1 text-xs text-text-tertiary">Funds Formed</div>
-          </div>
-          <div className="text-center">
-            <div className="font-serif text-2xl text-accent-gold">23 mins</div>
-            <div className="mt-1 text-xs text-text-tertiary">Avg Time to Recommendation</div>
-          </div>
+        <div className="mx-auto mt-10 max-w-3xl text-center">
+          <p className="font-serif text-2xl text-accent-gold">
+            Under 30 minutes from intake to recommendation
+          </p>
         </div>
       </div>
     </section>

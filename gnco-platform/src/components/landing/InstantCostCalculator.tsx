@@ -12,7 +12,7 @@ const PREVIEW_JURISDICTIONS = ['ireland', 'bvi', 'jersey'] as const
 
 const BASE_SCORES: Record<string, number> = {
   ireland: 87,
-  bvi: 72,
+  bvi: 71,
   jersey: 79,
   'cayman-islands': 89,
   luxembourg: 82,
@@ -108,7 +108,7 @@ export function InstantCostCalculator() {
     )
   }, [fundSize, lpCount, strategy])
 
-  const scoreContext = `Score based on: ${STRATEGY_LABEL[strategy]} strategy, €${fundSize}M fund, ${lpCount} LPs`
+  const scoreContext = `Score based on: ${STRATEGY_LABEL[strategy]} strategy · €${fundSize}M fund · ${lpCount} LPs · default LP mix`
 
   return (
     <section id="pricing" className="w-full border-y border-bg-border bg-bg-surface py-20">
