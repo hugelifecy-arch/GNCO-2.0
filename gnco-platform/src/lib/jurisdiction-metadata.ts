@@ -307,10 +307,12 @@ export const JURISDICTION_METADATA: Record<string, JurisdictionMetadata> = {
   cyprus: createMetadata({
     status: 'ACTIVE',
     last_verified_date: VERIFIED_DATE,
-    vehicles: 'AIF (Alternative Investment Fund), AIFLNP (AIF with Limited Number of Persons — up to 75 investors).',
+    vehicles:
+      'Alternative Investment Fund (AIF); AIF with Limited Number of Persons (AIFLNP — up to 75 investors, lighter regulation); Registered AIF (RAIF-equivalent, no CySEC pre-approval)',
     regulator: { name: 'Cyprus Securities and Exchange Commission (CySEC)', url: 'https://www.cysec.gov.cy' },
     timelines: 'Typical setup timeline is 8-14 weeks depending on approval route, local substance, and administrator onboarding.',
-    tax_headline: '12.5% corporate tax; no withholding tax on dividends to non-residents; IP Box regime; extensive EU treaty access.',
+    tax_headline:
+      '12.5% corporate income tax (lowest in EU); no withholding tax on dividends, interest or royalties to non-residents; IP Box regime (2.5% effective rate on IP income); full EU treaty access; non-dom regime for HNW individuals',
     key_compliance: 'CySEC authorization/notification where applicable, AML/CFT obligations, annual audit and filing requirements, and FATCA/CRS reporting.',
     service_providers: 'Apex Cyprus, Alter Domus Cyprus, Trident Trust; legal advisers include Harneys Cyprus and Chrysses Demetriades.',
     official_links: {
