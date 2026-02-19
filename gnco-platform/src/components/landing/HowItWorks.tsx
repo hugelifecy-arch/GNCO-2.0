@@ -1,6 +1,9 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { JURISDICTIONS } from '@/lib/jurisdiction-data'
+
+const jurisdictionCount = JURISDICTIONS.length
 
 const steps = [
   {
@@ -25,7 +28,7 @@ const steps = [
   },
   {
     title: 'Model & Compare',
-    body: 'GNCO scores all 15 jurisdictions and recommends your top 3 structures. Compare tax efficiency, formation cost, LP familiarity, and timeline side by side. Model the tax impact for each LP individually.',
+    body: `GNCO scores all ${jurisdictionCount} jurisdictions and recommends your top 3 structures. Compare tax efficiency, formation cost, LP familiarity, and timeline side by side. Model the tax impact for each LP individually.`,
     visual: (
       <div className="rounded-lg border border-bg-border bg-bg-elevated p-5">
         <div className="space-y-4">
