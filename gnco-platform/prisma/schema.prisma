@@ -133,9 +133,6 @@ model AuditLog {
   @@map("audit_logs")
 }
 
-
-
-
 enum RegulatoryImpactLevel {
   HIGH
   MEDIUM
