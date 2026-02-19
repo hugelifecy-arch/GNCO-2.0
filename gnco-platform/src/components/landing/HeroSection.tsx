@@ -6,40 +6,12 @@ import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 
 const headlineWords = "Architect the World's Most Sophisticated Fund Structures.".split(' ')
 
-const stats = [
-  { value: JURISDICTIONS.length, label: 'Jurisdictions Covered', suffix: '' },
-  { value: 52, label: 'Templates Available', suffix: '' },
-  { value: 0, label: 'ILPA-Aligned', suffix: '', isText: true },
-]
-
 function StatsStrip() {
   return (
-    <div className="mt-16 flex items-center justify-center gap-12 md:gap-16">
-      {stats.map((stat, index) => (
-        <div key={index} className="text-center">
-          {stat.isText ? (
-            <>
-              <p className="text-sm font-sans uppercase tracking-wider text-text-secondary">ILPA-Aligned</p>
-              <p className="mt-1 text-sm font-sans text-text-secondary">Reporting Standard</p>
-            </>
-          ) : (
-            <>
-              <motion.div
-                className="font-serif text-4xl font-bold text-accent-gold md:text-5xl"
-                aria-label={`${stat.value} ${stat.label.toLowerCase()}`}
-                initial={{ opacity: 0.7, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, amount: 0.4 }}
-                transition={{ duration: 0.45, ease: 'easeOut' }}
-              >
-                {stat.value}
-                {stat.suffix}
-              </motion.div>
-              <p className="mt-2 text-sm font-sans text-text-secondary">{stat.label}</p>
-            </>
-          )}
-        </div>
-      ))}
+    <div className="mt-16 text-center">
+      <p className="font-serif text-2xl text-accent-gold md:text-3xl">
+        {JURISDICTIONS.length} Jurisdictions · 52 Templates · ILPA-Aligned
+      </p>
     </div>
   )
 }
