@@ -15,6 +15,7 @@ export interface CoverageJurisdiction {
   confidence: CoverageConfidence
   lastVerifiedDate: string
   changeLog?: { date: string; note: string }[]
+  citations: { title: string; url: string; publisher: string; access_date: string }[]
 }
 
 const confidenceByStatus = {
@@ -46,6 +47,12 @@ export const COVERAGE_DATA: CoverageJurisdiction[] = JURISDICTIONS.map((jurisdic
       note: `Coverage baseline for ${jurisdiction.name} refreshed from current source mix.`,
     },
   ],
+  citations: (JURISDICTION_METADATA[jurisdiction.id]?.citations ?? []).map((citation) => ({
+    title: citation.title,
+    url: citation.url,
+    publisher: JURISDICTION_METADATA[jurisdiction.id]?.regulator.name ?? 'Official source',
+    access_date: JURISDICTION_METADATA[jurisdiction.id]?.last_verified_date ?? '2026-02-18',
+  })),
 }))
 
 export function getCoverageBySlug(slug: string) {
