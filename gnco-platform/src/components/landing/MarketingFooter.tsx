@@ -18,7 +18,7 @@ export function MarketingFooter() {
           <FooterLink href="/architect">Architect Engine</FooterLink>
           <FooterLink href="/coverage">Coverage</FooterLink>
           <FooterLink href="/methodology">Methodology</FooterLink>
-          <FooterLink href="/#pricing">Pricing</FooterLink>
+          <FooterLink href="/methodology">Pricing</FooterLink>
           <FooterLink href="/architect">Start Free</FooterLink>
         </div>
 
