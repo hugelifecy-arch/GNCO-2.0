@@ -90,7 +90,7 @@ export function InstantCostCalculator() {
   }, [fundSize, lpCount, strategy])
 
   return (
-    <section className="w-full border-y border-bg-border bg-bg-surface py-20">
+    <section id="pricing" className="w-full border-y border-bg-border bg-bg-surface py-20">
       <div className="mx-auto max-w-5xl px-6">
         <div className="mb-10 text-center">
           <h2 className="mb-4 font-serif text-4xl text-text-primary md:text-5xl">
