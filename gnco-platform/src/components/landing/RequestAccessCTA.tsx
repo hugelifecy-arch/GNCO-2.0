@@ -18,20 +18,20 @@ export function RequestAccessCTA() {
         <div className="mb-4 flex items-center justify-center gap-2">
           <div className="h-2 w-2 animate-pulse rounded-full bg-accent-green" />
           <p className="text-sm text-text-secondary">
-            <span className="font-semibold text-accent-gold">127</span> beta users actively testing
+            <span className="font-semibold text-accent-gold">127</span> early users actively testing
           </p>
         </div>
         <h2 className="mt-4 font-serif text-4xl text-text-primary">Start Using GNCO Today</h2>
         <p className="mt-5 text-text-secondary">
-          GNCO is now in open beta. Full platform access — completely free during the development phase. No credit card required.
-          Start modeling fund structures in minutes.
+          Full platform access is currently free during development. No credit card required. Start modeling fund
+          structures in minutes.
         </p>
 
         <Link
           href="/architect"
           className="mt-8 inline-block rounded-sm bg-accent-gold px-10 py-4 text-lg font-semibold text-bg-primary transition hover:bg-accent-gold-light"
         >
-          Launch Architect Engine →
+          Start Free →
         </Link>
 
         <p className="mt-4 text-xs text-text-tertiary">

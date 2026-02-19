@@ -19,7 +19,7 @@ export function MarketingFooter() {
           <FooterLink href="/coverage">Coverage</FooterLink>
           <FooterLink href="/methodology">Methodology</FooterLink>
           <FooterLink href="/#pricing">Pricing</FooterLink>
-          <FooterLink href="/architect">Start Free</FooterLink>
+          <FooterLink href="/architect">Start Free →</FooterLink>
         </div>
 
         <div className="space-y-2">
@@ -32,17 +32,14 @@ export function MarketingFooter() {
 
         <div className="space-y-3">
           <h4 className="font-semibold text-text-primary">Contact</h4>
-          <p className="text-sm text-text-secondary">Questions about the open beta?</p>
+          <p className="text-sm text-text-secondary">Questions about platform access?</p>
           <a className="text-sm text-accent-gold hover:text-accent-gold-light" href="mailto:contact@gnco.io">
             contact@gnco.io
           </a>
-          <p className="text-sm text-text-tertiary">No credit card required during beta.</p>
+          <p className="text-sm text-text-tertiary">No credit card required.</p>
         </div>
       </div>
 
-      <div className="mx-auto mt-10 max-w-6xl border-t border-bg-border py-4">
-        <p className="text-[11px] text-text-tertiary">Open beta: full platform access is currently available to all users.</p>
-      </div>
     </footer>
   )
 }
