@@ -8,6 +8,7 @@ import { LPRegistryTable } from '@/components/operator/LPRegistryTable'
 import { ComingSoonButton } from '@/components/shared/ComingSoonButton'
 import { useDemoMode } from '@/hooks/useDemoMode'
 import { MOCK_LPS } from '@/lib/mock-data'
+import { ComingSoonButton } from '@/components/shared/ComingSoonButton'
 
 export default function LPRegistryPage() {
   const { mode, setMode } = useDemoMode()

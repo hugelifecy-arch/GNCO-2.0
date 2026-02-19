@@ -15,6 +15,7 @@ import {
   Settings,
   TrendingUp,
   Users,
+  Handshake,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -58,7 +59,10 @@ const navSections: NavSection[] = [
   },
   {
     title: 'Reports',
-    items: [{ label: 'ILPA Report Generator', href: '/reports', icon: FileText }],
+    items: [
+      { label: 'ILPA Report Generator', href: '/reports', icon: FileText },
+      { label: 'Marketplace', href: '/marketplace', icon: Handshake },
+    ],
   },
 ]
 
@@ -107,7 +111,7 @@ export function AppSidebar() {
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-bg-border text-xs font-medium text-text-primary">
               AD
             </span>
-            <span className="hidden truncate text-sm text-text-secondary lg:inline">Alex Doe</span>
+            <span className="hidden truncate text-sm text-text-secondary lg:inline">Demo User</span>
           </div>
           <Link href="/settings" className="text-text-secondary transition hover:text-text-primary" aria-label="Open settings">
             <Settings className="h-4 w-4" />
