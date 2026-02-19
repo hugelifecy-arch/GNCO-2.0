@@ -1,24 +1,15 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">GNCO — Global Fund Architect</title>
-  <desc id="desc">Model optimal fund structures across 15 jurisdictions in minutes, not months.</desc>
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0B1220"/>
-      <stop offset="1" stop-color="#1D4ED8"/>
-    </linearGradient>
-  </defs>
-  <rect width="1200" height="630" fill="url(#bg)"/>
-  <rect x="72" y="72" width="1056" height="486" rx="28" fill="#0F172A" fill-opacity="0.58" stroke="#93C5FD" stroke-opacity="0.35"/>
-  <text x="132" y="258" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="700" letter-spacing="0.5">
-    GNCO — Global Fund Architect
+  <desc id="desc">15 Jurisdictions · Free Beta Access</desc>
+  <rect width="1200" height="630" fill="#0A0A0A"/>
+
+  <text x="600" y="290" text-anchor="middle" fill="#E5E7EB" font-family="Inter, Arial, sans-serif" font-size="168" font-weight="800" letter-spacing="2">
+    GNCO
   </text>
-  <text x="132" y="330" fill="#BFDBFE" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="500">
-    Institutional Fund Structure Modeling
+  <text x="600" y="378" text-anchor="middle" fill="#A1A1AA" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="600">
+    Global Fund Architect
   </text>
-  <text x="132" y="398" fill="#DBEAFE" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="400">
-    Model optimal fund structures across 15 jurisdictions in minutes, not months.
-  </text>
-  <text x="132" y="494" fill="#93C5FD" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="600" letter-spacing="2">
-    gnconew.vercel.app
+  <text x="600" y="582" text-anchor="middle" fill="#A1A1AA" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="500">
+    15 Jurisdictions · Free Beta Access
   </text>
 </svg>
