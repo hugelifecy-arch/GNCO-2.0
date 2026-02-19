@@ -3,7 +3,8 @@
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 
-import type { FundSize, ServiceProvider, ServiceProviderType } from '@/lib/types'
+import type { FundSize } from '@/lib/types'
+import type { ServiceProvider, ServiceProviderType } from '@/lib/service-provider-types'
 
 const fundSizeLabels: Record<FundSize, string> = {
   'under-50m': 'Under $50M',
@@ -40,7 +41,7 @@ export function ProviderDirectoryClient({ providers, jurisdictions }: ProviderDi
         .filter((provider) => (selectedType === 'all' ? true : provider.type === selectedType))
         .filter((provider) => (selectedFundSize === 'all' ? true : provider.fund_sizes.includes(selectedFundSize)))
         .filter((provider) => (verifiedOnly ? provider.gnco_verified : true))
-        .sort((a, b) => Number(b.featured) - Number(a.featured)),
+        .sort((a, b) => Number(b.featured) - Number(a.featured) || Number(b.gnco_verified) - Number(a.gnco_verified)),
     [providers, selectedFundSize, selectedJurisdiction, selectedType, verifiedOnly],
   )
 

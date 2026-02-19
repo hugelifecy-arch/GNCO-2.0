@@ -1,4 +1,4 @@
-import type { ServiceProvider } from '@/lib/types'
+import type { ServiceProvider } from '@/lib/service-provider-types'
 
 export const SERVICE_PROVIDERS: ServiceProvider[] = [
   {

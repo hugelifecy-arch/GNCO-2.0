@@ -72,20 +72,28 @@ export function ArchitectResultsClient() {
 
   const recommendedProviders = useMemo(() => {
     const topJurisdiction = topThree[0]
-    if (!topJurisdiction) return { jurisdictionLabel: null as string | null, administrators: [], auditors: [], legalCounsel: null as (typeof SERVICE_PROVIDERS)[number] | null }
+    if (!topJurisdiction) return { structureLabel: null as string | null, administrators: [], auditors: [], legalCounsel: null as (typeof SERVICE_PROVIDERS)[number] | null }
 
     const jurisdictionId = JURISDICTIONS.find((jurisdiction) => jurisdiction.name === topJurisdiction.jurisdiction)?.id
-    if (!jurisdictionId) return { jurisdictionLabel: topJurisdiction.jurisdiction, administrators: [], auditors: [], legalCounsel: null as (typeof SERVICE_PROVIDERS)[number] | null }
+    if (!jurisdictionId) return { structureLabel: topJurisdiction.jurisdiction, administrators: [], auditors: [], legalCounsel: null as (typeof SERVICE_PROVIDERS)[number] | null }
 
-    const forJurisdiction = SERVICE_PROVIDERS.filter((provider) => provider.jurisdictions.includes(jurisdictionId))
-    const administrators = forJurisdiction.filter((provider) => provider.type === 'Administrator').slice(0, 3)
-    const auditors = forJurisdiction.filter((provider) => provider.type === 'Auditor').slice(0, 2)
+    const rankedForJurisdiction = SERVICE_PROVIDERS
+      .filter((provider) => provider.jurisdictions.includes(jurisdictionId))
+      .sort((a, b) => Number(b.gnco_verified) - Number(a.gnco_verified) || Number(b.featured) - Number(a.featured))
+
+    const administrators = rankedForJurisdiction.filter((provider) => provider.type === 'Administrator').slice(0, 3)
+    const auditors = rankedForJurisdiction.filter((provider) => provider.type === 'Auditor').slice(0, 2)
     const legalCounsel =
-      forJurisdiction.find((provider) => provider.type === 'Legal Counsel' && provider.description.toLowerCase().includes('elp')) ??
-      forJurisdiction.find((provider) => provider.type === 'Legal Counsel') ??
+      rankedForJurisdiction.find((provider) => provider.type === 'Legal Counsel' && provider.description.toLowerCase().includes('elp')) ??
+      rankedForJurisdiction.find((provider) => provider.type === 'Legal Counsel') ??
       null
 
-    return { jurisdictionLabel: topJurisdiction.jurisdiction, administrators, auditors, legalCounsel }
+    return {
+      structureLabel: `${topJurisdiction.jurisdiction} ${topJurisdiction.vehicleType}`,
+      administrators,
+      auditors,
+      legalCounsel,
+    }
   }, [topThree])
 
   const exportBriefPdf = async () => {
@@ -214,7 +222,7 @@ export function ArchitectResultsClient() {
       <section className="rounded-xl border border-bg-border bg-bg-surface p-6">
         <h2 className="text-xl font-semibold">Recommended service providers</h2>
         <p className="mt-2 text-sm text-text-secondary">
-          Recommended service providers for your {recommendedProviders.jurisdictionLabel ?? 'recommended'} structure:
+          Recommended service providers for your {recommendedProviders.structureLabel ?? 'recommended'} structure:
         </p>
 
         <div className="mt-4 space-y-4">
