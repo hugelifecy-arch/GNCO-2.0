@@ -40,6 +40,15 @@ function run() {
   const { JURISDICTIONS } = loadTsModule(path.join(root, 'src/lib/jurisdiction-data.ts'))
   const { JURISDICTION_METADATA } = loadTsModule(path.join(root, 'src/lib/jurisdiction-metadata.ts'))
 
+  const { scoreJurisdiction, defaultScoringInputs } = loadTsModule(
+    path.join(root, 'src/lib/jurisdiction-scoring.ts')
+  )
+  assert.notEqual(
+    scoreJurisdiction('ireland', defaultScoringInputs),
+    scoreJurisdiction('bvi', defaultScoringInputs),
+    'Ireland and BVI suitability scores must differ for default inputs'
+  )
+
   const jurisdictions = JURISDICTIONS.map((jurisdiction) => ({
     ...jurisdiction,
     ...JURISDICTION_METADATA[jurisdiction.id],

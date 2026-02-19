@@ -3,23 +3,11 @@
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
+import { scoreJurisdiction, type FundStrategy } from '@/lib/jurisdiction-scoring'
 import { trackEvent } from '@/lib/analytics'
 import { formatCurrency } from '@/lib/utils'
 
-type FundStrategy = 'private-equity' | 'real-estate' | 'venture-capital' | 'private-credit'
-
 const PREVIEW_JURISDICTIONS = ['ireland', 'bvi', 'jersey'] as const
-
-const BASE_SCORES: Record<string, number> = {
-  ireland: 87,
-  bvi: 71,
-  jersey: 79,
-  'cayman-islands': 89,
-  luxembourg: 82,
-  'delaware-usa': 87,
-  singapore: 85,
-  cyprus: 83,
-}
 
 const STRATEGY_LABEL: Record<FundStrategy, string> = {
   'private-equity': 'PE',
@@ -85,7 +73,7 @@ export function InstantCostCalculator() {
 
         const totalYear1 = formationCost + annualCost
 
-        const score = BASE_SCORES[j.id] ?? 75
+        const score = scoreJurisdiction(j.id, { fundSize, lpCount, strategy })
 
         return [
           j.id,
@@ -108,7 +96,7 @@ export function InstantCostCalculator() {
     )
   }, [fundSize, lpCount, strategy])
 
-  const scoreContext = `Score based on: ${STRATEGY_LABEL[strategy]} strategy · €${fundSize}M fund · ${lpCount} LPs · default LP mix`
+  const scoreContext = `Score: ${STRATEGY_LABEL[strategy]} strategy · €${fundSize}M · ${lpCount} LPs · default GP domicile`
 
   return (
     <section id="cost-calculator" className="w-full border-y border-bg-border bg-bg-surface py-20">
