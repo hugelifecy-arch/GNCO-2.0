@@ -8,6 +8,10 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'GNCO — Global Fund Architect',
   description: 'Institutional intelligence for fund architecture, operations, and investor reporting workflows.',
+  icons: {
+    icon: '/icon',
+    apple: '/apple-icon',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

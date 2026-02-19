@@ -19,7 +19,14 @@ function StatsStrip() {
         <div key={index} className="text-center">
           {stat.isText ? (
             <>
-              <p className="text-sm font-sans uppercase tracking-wider text-text-secondary">ILPA-Aligned</p>
+              <Link
+                href="https://ilpa.org"
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm font-sans uppercase tracking-wider text-text-secondary underline-offset-4 hover:underline"
+              >
+                ILPA-Aligned
+              </Link>
               <p className="mt-1 text-sm font-sans text-text-secondary">Reporting Standard</p>
             </>
           ) : (
