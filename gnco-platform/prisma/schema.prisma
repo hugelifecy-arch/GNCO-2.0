@@ -18,6 +18,8 @@ model User {
   updatedAt      DateTime        @updatedAt
   accessRequests AccessRequest[]
   auditLogs      AuditLog[]
+  alertSubscriptions RegulatoryAlertSubscription[]
+  alertAcknowledgements RegulatoryAlertAcknowledgement[]
 
   @@map("users")
 }
@@ -131,4 +133,65 @@ model AuditLog {
   document   FundDocument? @relation(fields: [entityId], references: [id])
 
   @@map("audit_logs")
+}
+
+
+enum RegulatoryAlertSeverity {
+  low
+  medium
+  high
+  critical
+}
+
+model RegulatoryAlert {
+  id             String                           @id @default(cuid())
+  jurisdiction   String
+  title          String
+  whatChanged    String
+  whyItMatters   String
+  checklist      Json
+  sources        Json
+  effectiveDate  DateTime?
+  publishedAt    DateTime                         @default(now())
+  severity       RegulatoryAlertSeverity          @default(medium)
+  tags           String[]
+  createdAt      DateTime                         @default(now())
+  updatedAt      DateTime                         @updatedAt
+  subscriptions  RegulatoryAlertSubscription[]
+  acknowledgements RegulatoryAlertAcknowledgement[]
+
+  @@index([jurisdiction, publishedAt])
+  @@index([severity, publishedAt])
+  @@map("regulatory_alerts")
+}
+
+model RegulatoryAlertSubscription {
+  id                String           @id @default(cuid())
+  userId            String
+  alertId           String
+  isEmailEnabled    Boolean          @default(true)
+  isInAppEnabled    Boolean          @default(true)
+  emailLeadDays     Int[]            @default([30, 14, 7])
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  alert             RegulatoryAlert  @relation(fields: [alertId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, alertId])
+  @@index([userId])
+  @@index([alertId])
+  @@map("regulatory_alert_subscriptions")
+}
+
+model RegulatoryAlertAcknowledgement {
+  id             String           @id @default(cuid())
+  userId         String
+  alertId        String
+  acknowledgedAt DateTime         @default(now())
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  alert          RegulatoryAlert  @relation(fields: [alertId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, alertId])
+  @@index([alertId])
+  @@map("regulatory_alert_acknowledgements")
 }
