@@ -20,7 +20,10 @@ export function DashboardRegulatoryBadge() {
   if (unreadCount < 1) return null
 
   return (
-    <Link href="/admin/regulatory-updates?role=admin" className="inline-flex items-center gap-2 rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+    <Link
+      href="/coverage"
+      className="inline-flex items-center gap-2 rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300"
+    >
       <span className="h-2 w-2 rounded-full bg-red-500" aria-hidden />
       {unreadCount} new regulatory alerts
     </Link>

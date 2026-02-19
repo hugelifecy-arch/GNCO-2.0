@@ -1,3 +1,4 @@
+import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 import type { RegulatoryUpdate, SavedStructure } from '@/lib/regulatory-updates'
 
 export function getUnreadRegulatoryUpdatesForStructure(
@@ -13,8 +14,18 @@ export function getUnreadRegulatoryUpdatesForStructure(
   )
 }
 
+function formatJurisdictionLabel(jurisdictionId: string): string {
+  return (
+    JURISDICTIONS.find((jurisdiction) => jurisdiction.id === jurisdictionId)?.name ??
+    jurisdictionId
+      .split('-')
+      .map((part) => part[0]?.toUpperCase() + part.slice(1))
+      .join(' ')
+  )
+}
+
 export function buildWeeklyDigestLine(structure: SavedStructure, count: number): string {
-  return `${count} regulatory updates affecting your ${structure.jurisdiction_id} ${structure.vehicle_type} structure`
+  return `${count} regulatory updates affecting your ${formatJurisdictionLabel(structure.jurisdiction_id)} ${structure.vehicle_type} structure`
 }
 
 export function getActiveHighImpactAlerts(jurisdictionId: string, updates: RegulatoryUpdate[]): RegulatoryUpdate[] {
