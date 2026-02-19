@@ -14,10 +14,9 @@ export function RequestAccessCTA() {
         transition={{ duration: 0.5 }}
         className="mx-auto max-w-2xl px-6 text-center"
       >
-        <p className="text-xs tracking-widest text-accent-gold">🎉 OPEN BETA — FREE ACCESS</p>
         <div className="mb-4 flex items-center justify-center gap-2">
           <div className="h-2 w-2 animate-pulse rounded-full bg-accent-green" />
-          <p className="text-sm text-text-secondary">Join practitioners in open beta →</p>
+          <p className="text-sm text-text-secondary">Join practitioners building with GNCO →</p>
         </div>
         <h2 className="mt-4 font-serif text-4xl text-text-primary">Start Using GNCO Today</h2>
         <p className="mt-5 text-text-secondary">
@@ -29,11 +28,11 @@ export function RequestAccessCTA() {
           href="/architect"
           className="mt-8 inline-block rounded-sm bg-accent-gold px-10 py-4 text-lg font-semibold text-bg-primary transition hover:bg-accent-gold-light"
         >
-          Start Free →
+          Launch Architect Engine →
         </Link>
 
         <p className="mt-4 text-xs text-text-tertiary">
-          Beta users get free lifetime access to core features when we launch paid plans in Q3 2026. Your feedback shapes the product.
+          Users get free lifetime access to core features when we launch paid plans in Q3 2026. Your feedback shapes the product.
         </p>
       </motion.div>
     </section>
