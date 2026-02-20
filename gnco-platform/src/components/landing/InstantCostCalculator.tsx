@@ -18,6 +18,7 @@ import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 import { scoreJurisdiction, type FundStrategy, type LPMixEntry, type LPType } from '@/lib/jurisdiction-scoring'
 import { trackEvent } from '@/lib/analytics'
 import { formatCurrency } from '@/lib/utils'
+import { Citation } from '@/components/ui/Citation'
 
 const PREVIEW_JURISDICTIONS = ['ireland', 'bvi', 'jersey'] as const
 
@@ -525,11 +526,19 @@ export function InstantCostCalculator() {
                       )}
                     </div>
                     <div className="mt-2 flex items-center gap-4 text-sm text-text-secondary">
-                      <span>Formation: {formatCurrency(j.formationCost, true)}</span>
+                      <span>
+                        <Citation source="Service provider estimates" url="https://gnco.ai/methodology" marker="1">
+                          Formation: {formatCurrency(j.formationCost, true)}
+                        </Citation>
+                      </span>
                       <span>•</span>
                       <span>Annual: {formatCurrency(j.annualCost, true)}</span>
                       <span>•</span>
-                      <span>{j.timeline}</span>
+                      <span>
+                        <Citation source="Relevant regulator setup guidance" url="https://gnco.ai/coverage" marker="2">
+                          {j.timeline}
+                        </Citation>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -544,7 +553,9 @@ export function InstantCostCalculator() {
 
               <div className="mt-4">
                 <div className="mb-1 flex items-center justify-between text-xs text-text-secondary">
-                  <span>Suitability Score</span>
+                  <Citation source="GNCO methodology weighting framework" url="https://gnco.ai/methodology" marker="4">
+                    Suitability Score
+                  </Citation>
                   <span className="font-semibold text-accent-gold">{j.score}/100</span>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-bg-border">

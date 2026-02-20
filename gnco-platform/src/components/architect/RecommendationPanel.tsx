@@ -11,6 +11,7 @@ import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 import { trackEvent } from '@/lib/analytics'
 import type { ArchitectBrief, FundStructureRecommendation } from '@/lib/types'
 import { cn, formatCurrency } from '@/lib/utils'
+import { Citation } from '@/components/ui/Citation'
 
 import { BookCallCTA } from './BookCallCTA'
 
@@ -250,11 +251,20 @@ export function RecommendationPanel({ brief, onStartNew }: RecommendationPanelPr
         </div>
         <p className="mt-5 max-w-4xl text-text-secondary">{primary.reasoning}</p>
         <p className="mt-4 text-sm text-text-secondary">
-          Est. Formation Cost: {formatCurrency(primary.estimatedFormationCost.min, true)}–{formatCurrency(primary.estimatedFormationCost.max, true)} |
-          {' '}Est. Timeline: {primary.estimatedTimelineWeeks.min}–{primary.estimatedTimelineWeeks.max} wks
+          <Citation source="Service provider estimates" url="https://gnco.ai/methodology" marker="1">
+            Est. Formation Cost: {formatCurrency(primary.estimatedFormationCost.min, true)}–{formatCurrency(primary.estimatedFormationCost.max, true)}
+          </Citation>{' '}
+          |{' '}
+          <Citation source="Relevant regulator setup guidance" url="https://gnco.ai/coverage" marker="2">
+            Est. Timeline: {primary.estimatedTimelineWeeks.min}–{primary.estimatedTimelineWeeks.max} wks
+          </Citation>
         </p>
         <div className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
-          <p>Tax Efficiency: {scoreBar(primary.scores.taxEfficiency)} {primary.scores.taxEfficiency}</p>
+          <p>
+            <Citation source="Relevant tax authority and treaty references" url="https://gnco.ai/disclosures" marker="3">
+              Tax Efficiency: {scoreBar(primary.scores.taxEfficiency)} {primary.scores.taxEfficiency}
+            </Citation>
+          </p>
           <p>LP Familiarity: {scoreBar(primary.scores.lpFamiliarity)} {primary.scores.lpFamiliarity}</p>
         </div>
       </section>
@@ -313,7 +323,11 @@ export function RecommendationPanel({ brief, onStartNew }: RecommendationPanelPr
                 </select>
                 <input value={row.domicile} onChange={(e) => setTaxRows((prev) => prev.map((item) => (item.id === row.id ? { ...item, domicile: e.target.value } : item)))} placeholder="Domicile" className="col-span-3 rounded-md border border-bg-border bg-bg-elevated px-2 py-2 text-sm" />
                 <input type="number" value={row.commitment} onChange={(e) => setTaxRows((prev) => prev.map((item) => (item.id === row.id ? { ...item, commitment: Number(e.target.value) } : item)))} className="col-span-3 rounded-md border border-bg-border bg-bg-elevated px-2 py-2 text-sm" />
-                <div className="col-span-2 flex items-center text-sm">{taxImpact.toFixed(1)}% effective</div>
+                <div className="col-span-2 flex items-center text-sm">
+                  <Citation source="Relevant tax authority and treaty references" url="https://gnco.ai/disclosures" marker="3">
+                    {taxImpact.toFixed(1)}% effective
+                  </Citation>
+                </div>
                 <button onClick={() => setTaxRows((prev) => prev.filter((item) => item.id !== row.id))} className="col-span-1 rounded-md border border-bg-border text-sm">×</button>
               </div>
             )
@@ -335,7 +349,12 @@ export function RecommendationPanel({ brief, onStartNew }: RecommendationPanelPr
         <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-text-secondary">
           <li><span className="text-text-primary">Recommended Structure Summary:</span> {primary.reasoning}</li>
           <li><span className="text-text-primary">Key Decisions Requiring Legal Input:</span> blocker selection, governance rights, and side letter framework.</li>
-          <li><span className="text-text-primary">Estimated Budget:</span> {formatCurrency(primary.estimatedFormationCost.min, true)}–{formatCurrency(primary.estimatedFormationCost.max, true)} plus local admin.</li>
+          <li>
+            <span className="text-text-primary">Estimated Budget:</span>{' '}
+            <Citation source="Service provider estimates" url="https://gnco.ai/methodology" marker="1">
+              {formatCurrency(primary.estimatedFormationCost.min, true)}–{formatCurrency(primary.estimatedFormationCost.max, true)} plus local admin.
+            </Citation>
+          </li>
           <li><span className="text-text-primary">Open Questions to Resolve:</span> treaty qualification, VAT, and reporting obligations.</li>
           <li><span className="text-text-primary">Suggested Specialist Firms:</span> {JURISDICTIONS.find((j) => j.name === primary.jurisdiction)?.keyServiceProviders.lawFirms.slice(0, 3).join(', ')}</li>
         </ul>

@@ -1,6 +1,8 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
+import { Citation } from '@/components/ui/Citation'
 
 const sections = [
   {
@@ -12,8 +14,14 @@ const sections = [
   {
     id: 'jurisdiction-scoring-model',
     title: 'Jurisdiction Scoring Model',
-    content:
-      'Our six dimensions are: tax efficiency (25%), LP familiarity (20%), regulatory simplicity (15%), speed to close (15%), cost of formation (15%), and privacy/governance fit (10%). Weighted scores are normalized to a 0–100 scale and refreshed whenever major regulatory or treaty updates are detected.',
+    content: (
+      <>
+        <Citation source="GNCO methodology weighting framework" url="https://gnco.ai/methodology" marker="1">
+          Our six dimensions are: tax efficiency (25%), LP familiarity (20%), regulatory simplicity (15%), speed to close (15%), cost of formation (15%), and privacy/governance fit (10%).
+        </Citation>{' '}
+        Weighted scores are normalized to a 0–100 scale and refreshed whenever major regulatory or treaty updates are detected.
+      </>
+    ),
   },
   {
     id: 'lp-tax-impact-methodology',
@@ -47,10 +55,18 @@ const sections = [
   },
 ]
 
-export function MethodologyPageClient() {
-  const [activeSection, setActiveSection] = useState(sections[0].id)
+type MethodologySection = {
+  id: string
+  title: string
+  content: ReactNode
+}
 
-  const sectionIds = useMemo(() => sections.map((section) => section.id), [])
+const typedSections: MethodologySection[] = sections
+
+export function MethodologyPageClient() {
+  const [activeSection, setActiveSection] = useState(typedSections[0].id)
+
+  const sectionIds = useMemo(() => typedSections.map((section) => section.id), [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -85,7 +101,7 @@ export function MethodologyPageClient() {
             <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-text-secondary">Table of Contents</p>
             <nav aria-label="Methodology sections">
               <ul className="space-y-1">
-                {sections.map((section, index) => (
+                {typedSections.map((section, index) => (
                   <li key={section.id}>
                     <a
                       href={`#${section.id}`}
@@ -113,12 +129,12 @@ export function MethodologyPageClient() {
             </p>
           </header>
 
-          {sections.map((section, index) => (
+          {typedSections.map((section, index) => (
             <section id={section.id} key={section.id} className="scroll-mt-24 space-y-3 border-t border-bg-border pt-6 first:border-t-0 first:pt-0">
               <h2 className="text-2xl font-semibold">
                 {index + 1}. {section.title}
               </h2>
-              <p className="leading-7 text-text-secondary">{section.content}</p>
+              <div className="leading-7 text-text-secondary">{section.content}</div>
             </section>
           ))}
         </article>

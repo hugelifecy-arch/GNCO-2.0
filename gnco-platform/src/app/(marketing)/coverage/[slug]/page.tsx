@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import CitationsList from '@/components/CitationsList'
 import DataFreshnessBanner from '@/components/DataFreshnessBanner'
 import { getCoverageBySlug } from '@/data/coverage'
+import { Citation } from '@/components/ui/Citation'
 
 export default function CoverageDetailPage({ params }: { params: { slug: string } }) {
   const coverage = getCoverageBySlug(params.slug)
@@ -26,8 +27,16 @@ export default function CoverageDetailPage({ params }: { params: { slug: string 
             jurisdictionName={coverage.name}
           />
         </div>
-        <p className="mt-4 text-sm text-text-secondary">Formation cost range: {coverage.formationCostRange}</p>
-        <p className="text-sm text-text-secondary">Formation timeline: {coverage.timelineRange}</p>
+        <p className="mt-4 text-sm text-text-secondary">
+          <Citation source="Service provider estimates" url="https://gnco.ai/methodology" marker="1">
+            Formation cost range: {coverage.formationCostRange}
+          </Citation>
+        </p>
+        <p className="text-sm text-text-secondary">
+          <Citation source="Relevant regulator setup guidance" url="https://gnco.ai/coverage" marker="2">
+            Formation timeline: {coverage.timelineRange}
+          </Citation>
+        </p>
       </section>
 
       <section className="grid gap-4 rounded-xl border border-bg-border bg-bg-surface p-6 md:grid-cols-2">
