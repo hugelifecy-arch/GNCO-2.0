@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import { ChevronDown } from 'lucide-react'
 import {
   CartesianGrid,
   Legend,
@@ -12,8 +13,9 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
-import { scoreJurisdiction, type FundStrategy } from '@/lib/jurisdiction-scoring'
+import { scoreJurisdiction, type FundStrategy, type LPMixEntry, type LPType } from '@/lib/jurisdiction-scoring'
 import { trackEvent } from '@/lib/analytics'
 import { formatCurrency } from '@/lib/utils'
 
@@ -26,10 +28,73 @@ const STRATEGY_LABEL: Record<FundStrategy, string> = {
   'private-credit': 'Private Credit',
 }
 
+const LP_TYPES: LPType[] = [
+  'Individual/Family Office',
+  'Pension Fund',
+  'Endowment/Foundation',
+  'Sovereign Wealth Fund',
+  'Corporate',
+  'Insurance',
+]
+
+const LP_MIX_COUNTRIES = [
+  'United States',
+  'United Kingdom',
+  'Canada',
+  'Germany',
+  'France',
+  'Netherlands',
+  'Luxembourg',
+  'Switzerland',
+  'Ireland',
+  'Spain',
+  'Italy',
+  'Belgium',
+  'Sweden',
+  'Norway',
+  'Denmark',
+  'Finland',
+  'Portugal',
+  'Poland',
+  'Austria',
+  'Japan',
+  'Singapore',
+  'Hong Kong',
+  'China',
+  'South Korea',
+  'Australia',
+  'New Zealand',
+  'India',
+  'United Arab Emirates',
+  'Saudi Arabia',
+  'Qatar',
+  'Kuwait',
+  'Bahrain',
+  'Israel',
+  'Brazil',
+  'Mexico',
+  'South Africa',
+  'Mauritius',
+  'Cayman Islands',
+  'Jersey',
+  'Guernsey',
+]
+
+type LPMixRow = LPMixEntry & { id: string }
+
+const createLpMixRow = (index: number): LPMixRow => ({
+  id: `lp-mix-${index}`,
+  lpType: 'Individual/Family Office',
+  domicile: 'United States',
+  commitmentPercent: 0,
+})
+
 export function InstantCostCalculator() {
   const [fundSize, setFundSize] = useState(100)
   const [lpCount, setLpCount] = useState(15)
   const [strategy, setStrategy] = useState<FundStrategy>('private-equity')
+  const [showLpMix, setShowLpMix] = useState(false)
+  const [lpMixRows, setLpMixRows] = useState<LPMixRow[]>([createLpMixRow(1)])
   const [fundLife, setFundLife] = useState<5 | 7 | 10>(5)
   const [aumGrowthRate, setAumGrowthRate] = useState<0 | 10 | 25>(10)
   const reinvestmentRate = 3
@@ -63,6 +128,31 @@ export function InstantCostCalculator() {
     })
   }
 
+  const updateLpMixRow = (id: string, updates: Partial<LPMixRow>) => {
+    setLpMixRows((current) => current.map((row) => (row.id === id ? { ...row, ...updates } : row)))
+  }
+
+  const addLpMixRow = () => {
+    if (lpMixRows.length >= 10) return
+    setLpMixRows((current) => [...current, createLpMixRow(current.length + 1)])
+  }
+
+  const removeLpMixRow = (id: string) => {
+    setLpMixRows((current) => (current.length === 1 ? current : current.filter((row) => row.id !== id)))
+  }
+
+  const lpMixTotal = useMemo(
+    () => lpMixRows.reduce((sum, row) => sum + (Number.isFinite(row.commitmentPercent) ? row.commitmentPercent : 0), 0),
+    [lpMixRows]
+  )
+  const lpMixProgress = Math.min(lpMixTotal, 100)
+  const lpMixReady = lpMixRows.some((row) => row.commitmentPercent > 0) && lpMixTotal === 100
+
+  const scoringLpMix = useMemo(
+    () => (showLpMix && lpMixReady ? lpMixRows.map(({ lpType, domicile, commitmentPercent }) => ({ lpType, domicile, commitmentPercent })) : undefined),
+    [lpMixReady, lpMixRows, showLpMix]
+  )
+
   const topJurisdictions = useMemo(() => {
     const scoredById = new Map(
       JURISDICTIONS.map((j) => {
@@ -92,7 +182,10 @@ export function InstantCostCalculator() {
 
         const totalYear1 = formationCost + annualCost
 
-        const score = scoreJurisdiction(j.id, { fundSize, lpCount, strategy })
+        const score = scoreJurisdiction(
+          { id: j.id, taxTreaties: j.taxTreaties },
+          { fundSize, lpCount, strategy, lpMix: scoringLpMix }
+        )
 
         return [
           j.id,
@@ -114,7 +207,7 @@ export function InstantCostCalculator() {
     return PREVIEW_JURISDICTIONS.map((jurisdictionId) => scoredById.get(jurisdictionId)).filter(
       (jurisdiction): jurisdiction is NonNullable<typeof jurisdiction> => Boolean(jurisdiction)
     )
-  }, [fundSize, lpCount, strategy])
+  }, [fundSize, lpCount, scoringLpMix, strategy])
 
   const projectionData = useMemo(() => {
     return topJurisdictions.map((jurisdiction) => {
@@ -191,7 +284,9 @@ export function InstantCostCalculator() {
     }
   }, [aumGrowthRate, fundLife, fundSize, projectionData])
 
-  const scoreContext = `Score: ${STRATEGY_LABEL[strategy]} strategy · €${fundSize}M · ${lpCount} LPs · default GP domicile`
+  const scoreContext = scoringLpMix
+    ? `Score: ${STRATEGY_LABEL[strategy]} strategy · €${fundSize}M · ${lpCount} LPs · LP-mix WHT weighted`
+    : `Score: ${STRATEGY_LABEL[strategy]} strategy · €${fundSize}M · ${lpCount} LPs · default GP domicile`
 
   return (
     <section id="cost-calculator" className="w-full border-y border-bg-border bg-bg-surface py-20">
@@ -262,6 +357,111 @@ export function InstantCostCalculator() {
               <option value="venture-capital">Venture Capital</option>
               <option value="private-credit">Private Credit</option>
             </select>
+          </div>
+
+          <div className="mt-6 rounded-md border border-bg-border bg-bg-primary/60">
+            <button
+              type="button"
+              onClick={() => setShowLpMix((value) => !value)}
+              className="flex w-full items-center justify-between px-4 py-3 text-left"
+            >
+              <div>
+                <p className="font-sans text-sm text-text-primary">Define LP Mix (optional)</p>
+                <p className="text-xs text-text-secondary">Use LP type + domicile + commitment % to drive WHT-weighted suitability scoring.</p>
+              </div>
+              <ChevronDown className={`h-4 w-4 text-text-secondary transition-transform ${showLpMix ? 'rotate-180' : ''}`} />
+            </button>
+
+            {showLpMix && (
+              <div className="space-y-4 border-t border-bg-border px-4 py-4">
+                {lpMixRows.map((row, index) => (
+                  <div key={row.id} className="grid gap-3 rounded-md border border-bg-border p-3 md:grid-cols-12">
+                    <div className="md:col-span-4">
+                      <label className="mb-1 block text-xs text-text-secondary">LP Type</label>
+                      <select
+                        value={row.lpType}
+                        onChange={(event) => updateLpMixRow(row.id, { lpType: event.target.value as LPType })}
+                        className="w-full rounded-sm border border-bg-border bg-bg-primary px-3 py-2 text-sm"
+                      >
+                        {LP_TYPES.map((lpType) => (
+                          <option key={lpType} value={lpType}>{lpType}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="md:col-span-4">
+                      <label className="mb-1 block text-xs text-text-secondary">Domicile</label>
+                      <select
+                        value={row.domicile}
+                        onChange={(event) => updateLpMixRow(row.id, { domicile: event.target.value })}
+                        className="w-full rounded-sm border border-bg-border bg-bg-primary px-3 py-2 text-sm"
+                      >
+                        {LP_MIX_COUNTRIES.map((country) => (
+                          <option key={country} value={country}>{country}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="md:col-span-3">
+                      <label className="mb-1 block text-xs text-text-secondary">Approx. commitment %</label>
+                      <input
+                        type="number"
+                        min={0}
+                        max={100}
+                        value={row.commitmentPercent}
+                        onChange={(event) =>
+                          updateLpMixRow(row.id, {
+                            commitmentPercent: Math.min(100, Math.max(0, Number(event.target.value) || 0)),
+                          })
+                        }
+                        className="w-full rounded-sm border border-bg-border bg-bg-primary px-3 py-2 text-sm"
+                      />
+                    </div>
+
+                    <div className="flex items-end md:col-span-1">
+                      <button
+                        type="button"
+                        onClick={() => removeLpMixRow(row.id)}
+                        disabled={lpMixRows.length === 1}
+                        className="w-full rounded-sm border border-bg-border px-2 py-2 text-xs text-text-secondary disabled:opacity-40"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+
+                <div className="flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={addLpMixRow}
+                    disabled={lpMixRows.length >= 10}
+                    className="rounded-sm border border-bg-border px-3 py-2 text-xs text-text-secondary disabled:opacity-40"
+                  >
+                    Add LP row ({lpMixRows.length}/10)
+                  </button>
+                  <span className="text-xs text-text-secondary">Total commitment: {lpMixTotal}%</span>
+                </div>
+
+                <div>
+                  <div className="mb-1 flex justify-between text-xs">
+                    <span className="text-text-secondary">Allocation progress</span>
+                    <span className={lpMixTotal === 100 ? 'text-green-400' : 'text-amber-400'}>{lpMixTotal}% / 100%</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-bg-border">
+                    <div
+                      className={`h-full transition-all ${lpMixTotal === 100 ? 'bg-green-500' : 'bg-amber-500'}`}
+                      style={{ width: `${lpMixProgress}%` }}
+                    />
+                  </div>
+                  <p className="mt-2 text-xs text-text-secondary">
+                    {lpMixReady
+                      ? 'LP mix is valid. Suitability scores now include WHT-weighted LP mix impact.'
+                      : 'Set total commitment to exactly 100% to activate LP-specific WHT-weighted scoring.'}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="mt-6 grid gap-6 md:grid-cols-3">
