@@ -28,10 +28,6 @@ export function CredibilityStrip() {
             </span>
           ))}
         </div>
-
-        <div className="mx-auto mt-10 max-w-3xl text-center">
-          <p className="font-serif text-2xl text-accent-gold">Under 30 minutes</p>
-        </div>
       </div>
     </section>
   )
