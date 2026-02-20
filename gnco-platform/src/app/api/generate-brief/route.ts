@@ -60,15 +60,20 @@ function splitRequirements(value: string) {
 }
 
 async function renderWithReactPdf(pages: AttorneyBriefPage[]) {
-  const React = await import('react')
-  const renderer = await import('@react-pdf/renderer')
-  const { Document, Page, Text, View, StyleSheet, renderToBuffer } = renderer as unknown as {
-    Document: React.ComponentType<{ children: React.ReactNode }>
-    Page: React.ComponentType<{ children: React.ReactNode; size?: string; style?: Record<string, unknown> }>
-    Text: React.ComponentType<{ children: React.ReactNode; style?: Record<string, unknown> }>
-    View: React.ComponentType<{ children: React.ReactNode; style?: Record<string, unknown> }>
+  const reactPdfModuleName = '@react-pdf/renderer'
+
+  const [{ createElement }, reactPdf] = await Promise.all([
+    import('react'),
+    import(reactPdfModuleName),
+  ])
+
+  const { Document, Page, Text, View, StyleSheet, renderToBuffer } = reactPdf as {
+    Document: unknown
+    Page: unknown
+    Text: unknown
+    View: unknown
     StyleSheet: { create: (styles: Record<string, Record<string, unknown>>) => Record<string, Record<string, unknown>> }
-    renderToBuffer: (node: React.ReactElement) => Promise<Buffer>
+    renderToBuffer: (node: unknown) => Promise<Buffer>
   }
 
   const styles = StyleSheet.create({
@@ -79,18 +84,20 @@ async function renderWithReactPdf(pages: AttorneyBriefPage[]) {
     footer: { marginTop: 16, fontSize: 9, color: '#64748b' },
   })
 
-  const doc = React.createElement(
-    Document,
+  const doc = createElement(
+    Document as never,
     null,
     pages.map((page, index) =>
-      React.createElement(
-        Page,
+      createElement(
+        Page as never,
         { key: `${page.title}-${index}`, size: 'A4', style: styles.page },
-        React.createElement(View, null,
-          React.createElement(Text, { style: styles.header }, `GNCO Attorney Brief — ${page.title}`),
-          page.subtitle ? React.createElement(Text, { style: styles.subtitle }, page.subtitle) : null,
-          ...page.bullets.map((bullet, bulletIndex) => React.createElement(Text, { key: `${index}-${bulletIndex}`, style: styles.bullet }, `• ${bullet}`)),
-          React.createElement(Text, { style: styles.footer }, `Page ${index + 1} of ${pages.length}`),
+        createElement(
+          View as never,
+          null,
+          createElement(Text as never, { style: styles.header }, `GNCO Attorney Brief — ${page.title}`),
+          page.subtitle ? createElement(Text as never, { style: styles.subtitle }, page.subtitle) : null,
+          ...page.bullets.map((bullet, bulletIndex) => createElement(Text as never, { key: `${index}-${bulletIndex}`, style: styles.bullet }, `• ${bullet}`)),
+          createElement(Text as never, { style: styles.footer }, `Page ${index + 1} of ${pages.length}`),
         ),
       ),
     ),
