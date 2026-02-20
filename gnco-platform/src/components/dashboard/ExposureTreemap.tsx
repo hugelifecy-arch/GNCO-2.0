@@ -19,6 +19,44 @@ interface TreemapNode {
   fund?: ExposureFund
 }
 
+
+interface TreemapContentProps {
+  depth?: number
+  x?: number
+  y?: number
+  width?: number
+  height?: number
+  name?: string
+  payload?: TreemapNode
+}
+
+function TreemapCellContent({ view, ...props }: TreemapContentProps & { view: ExposureView }) {
+  const depth = props.depth ?? 0
+  const x = props.x ?? 0
+  const y = props.y ?? 0
+  const width = props.width ?? 0
+  const height = props.height ?? 0
+  const name = props.name ?? ''
+  const node = props.payload
+  const fill = depth === 3 ? node?.fill ?? '#2563EB' : depth === 2 ? '#1F2937' : '#111827'
+
+  return (
+    <g>
+      <rect x={x} y={y} width={width} height={height} fill={fill} stroke="#0D1520" strokeWidth={1} rx={4} ry={4} />
+      {width > 86 && height > 42 ? (
+        <text x={x + 8} y={y + 18} fill="#F8FAFC" fontSize={11}>
+          {name}
+        </text>
+      ) : null}
+      {depth === 3 && node?.fund && width > 112 && height > 62 ? (
+        <text x={x + 8} y={y + 34} fill="#CBD5E1" fontSize={11}>
+          {formatViewValue(view, node.fund)}
+        </text>
+      ) : null}
+    </g>
+  )
+}
+
 const VIEW_OPTIONS: { key: ExposureView; label: string }[] = [
   { key: 'commitment', label: 'Commitment' },
   { key: 'nav', label: 'NAV' },
@@ -125,26 +163,7 @@ export function ExposureTreemap({ funds }: ExposureTreemapProps) {
             dataKey="value"
             stroke="#0D1520"
             isAnimationActive={false}
-            content={({ depth, x, y, width, height, name, payload }) => {
-              const node = payload as TreemapNode
-              const fill = depth === 3 ? node.fill ?? '#2563EB' : depth === 2 ? '#1F2937' : '#111827'
-
-              return (
-                <g>
-                  <rect x={x} y={y} width={width} height={height} fill={fill} stroke="#0D1520" strokeWidth={1} rx={4} ry={4} />
-                  {width > 86 && height > 42 ? (
-                    <text x={x + 8} y={y + 18} fill="#F8FAFC" fontSize={11}>
-                      {name}
-                    </text>
-                  ) : null}
-                  {depth === 3 && node.fund && width > 112 && height > 62 ? (
-                    <text x={x + 8} y={y + 34} fill="#CBD5E1" fontSize={11}>
-                      {formatViewValue(view, node.fund)}
-                    </text>
-                  ) : null}
-                </g>
-              )
-            }}
+            content={<TreemapCellContent view={view} />}
           >
             <Tooltip
               contentStyle={{ backgroundColor: '#0D1520', border: '1px solid #1E2D42', borderRadius: 8 }}
