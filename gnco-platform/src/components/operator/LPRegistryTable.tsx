@@ -1,12 +1,12 @@
 'use client'
 
-import { Building2 } from 'lucide-react'
+import { ArrowDownUp, Building2, Download } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 import { EmptyState } from '@/components/shared/EmptyState'
-import { StatusBadge } from '@/components/shared/StatusBadge'
+import { calculateLPAttribution, DEFAULT_HURDLE_RATE } from '@/lib/lp-attribution'
 import type { LPEntry } from '@/lib/types'
-import { formatCurrency } from '@/lib/utils'
+import { formatCurrency, formatPercent } from '@/lib/utils'
 
 interface LPRegistryTableProps {
   data: LPEntry[]
@@ -19,7 +19,24 @@ interface LPRegistryTableProps {
   }
 }
 
-type SortKey = 'commitmentAmount' | 'calledCapital' | 'domicile'
+type TableRow = LPEntry & ReturnType<typeof calculateLPAttribution>
+
+type SortKey =
+  | 'legalName'
+  | 'domicile'
+  | 'entityType'
+  | 'commitmentAmount'
+  | 'calledCapital'
+  | 'distributionsReceived'
+  | 'currentNav'
+  | 'grossIrr'
+  | 'netIrr'
+  | 'afterWhtIrr'
+  | 'afterTaxIrr'
+  | 'dpi'
+  | 'rvpi'
+  | 'tvpi'
+  | 'moic'
 
 const flags: Record<string, string> = {
   'United States': '🇺🇸',
@@ -34,10 +51,9 @@ const flags: Record<string, string> = {
 }
 
 export function LPRegistryTable({ data, search, filters }: LPRegistryTableProps) {
-  const [sortKey, setSortKey] = useState<SortKey>('commitmentAmount')
+  const [sortKey, setSortKey] = useState<SortKey>('netIrr')
   const [sortAsc, setSortAsc] = useState(false)
   const [selected, setSelected] = useState<string[]>([])
-  const [activeLP, setActiveLP] = useState<LPEntry | null>(null)
 
   const rows = useMemo(() => {
     const filtered = data.filter((lp) => {
@@ -56,12 +72,17 @@ export function LPRegistryTable({ data, search, filters }: LPRegistryTableProps)
       return bySearch && byEntity && byDomicile && byKyc && byCommitment
     })
 
-    return filtered.sort((a, b) => {
+    const withMetrics: TableRow[] = filtered.map((lp) => ({
+      ...lp,
+      ...calculateLPAttribution(lp),
+    }))
+
+    return withMetrics.sort((a, b) => {
       const modifier = sortAsc ? 1 : -1
-      if (sortKey === 'domicile') {
-        return a.domicile.localeCompare(b.domicile) * modifier
+      if (typeof a[sortKey] === 'string' && typeof b[sortKey] === 'string') {
+        return (a[sortKey] as string).localeCompare(b[sortKey] as string) * modifier
       }
-      return (a[sortKey] - b[sortKey]) * modifier
+      return ((a[sortKey] as number) - (b[sortKey] as number)) * modifier
     })
   }, [data, filters, search, sortAsc, sortKey])
 
@@ -70,11 +91,59 @@ export function LPRegistryTable({ data, search, filters }: LPRegistryTableProps)
       setSortAsc((prev) => !prev)
     } else {
       setSortKey(key)
-      setSortAsc(key === 'domicile')
+      setSortAsc(['legalName', 'domicile', 'entityType'].includes(key))
     }
   }
 
+  const exportLPReport = async (lp: TableRow) => {
+    const payload = {
+      generatedAt: new Date().toISOString().slice(0, 10),
+      lpName: lp.legalName,
+      domicile: lp.domicile,
+      entityType: lp.entityType,
+      rows: [
+        { label: 'Commitment (€)', value: formatCurrency(lp.commitmentAmount) },
+        { label: 'Called Capital (€)', value: formatCurrency(lp.calledCapital) },
+        { label: 'Distributions Received (€)', value: formatCurrency(lp.distributionsReceived) },
+        { label: 'Current NAV (€)', value: formatCurrency(lp.currentNav) },
+        { label: 'Gross IRR', value: formatPercent(lp.grossIrr, 2) },
+        { label: 'Net IRR', value: formatPercent(lp.netIrr, 2) },
+        { label: 'After-WHT IRR', value: formatPercent(lp.afterWhtIrr, 2) },
+        { label: 'After-Tax IRR', value: formatPercent(lp.afterTaxIrr, 2) },
+        { label: 'DPI', value: lp.dpi.toFixed(2) },
+        { label: 'RVPI', value: lp.rvpi.toFixed(2) },
+        { label: 'TVPI', value: lp.tvpi.toFixed(2) },
+        { label: 'MOIC', value: lp.moic.toFixed(2) },
+      ],
+    }
+
+    const response = await fetch('/api/export/lp-attribution', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+
+    if (!response.ok) return
+
+    const blob = await response.blob()
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `lp-attribution-${lp.legalName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${payload.generatedAt}.pdf`
+    link.click()
+    window.URL.revokeObjectURL(url)
+  }
+
   const allSelected = rows.length > 0 && selected.length === rows.length
+
+  const headerCell = (label: string, key: SortKey) => (
+    <th className="px-3 py-2" key={key}>
+      <button type="button" className="inline-flex items-center gap-1 text-left" onClick={() => toggleSort(key)}>
+        {label}
+        <ArrowDownUp className="h-3 w-3" />
+      </button>
+    </th>
+  )
 
   return (
     <section className="rounded-lg border border-bg-border bg-bg-surface p-4">
@@ -82,12 +151,9 @@ export function LPRegistryTable({ data, search, filters }: LPRegistryTableProps)
         <button type="button" className="rounded border border-bg-border px-3 py-1 text-sm">
           Export Selected
         </button>
-        <button type="button" className="rounded border border-bg-border px-3 py-1 text-sm">
-          Send Notice
-        </button>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full text-left text-sm">
+        <table className="min-w-[1700px] text-left text-sm">
           <thead className="border-b border-bg-border text-text-secondary">
             <tr>
               <th className="px-2 py-2">
@@ -99,20 +165,28 @@ export function LPRegistryTable({ data, search, filters }: LPRegistryTableProps)
                   }
                 />
               </th>
-              <th className="px-3 py-2">LP Name</th>
-              <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort('domicile')}>Domicile</th>
-              <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort('commitmentAmount')}>Commitment</th>
-              <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort('calledCapital')}>Called Capital</th>
-              <th className="px-3 py-2">Distributions</th>
-              <th className="px-3 py-2">KYC Status</th>
-              <th className="px-3 py-2">Subscription</th>
+              {headerCell('LP Name', 'legalName')}
+              {headerCell('Domicile', 'domicile')}
+              {headerCell('Entity Type', 'entityType')}
+              {headerCell('Commitment (€)', 'commitmentAmount')}
+              {headerCell('Called Capital (€)', 'calledCapital')}
+              {headerCell('Distributions Received (€)', 'distributionsReceived')}
+              {headerCell('Current NAV (€)', 'currentNav')}
+              {headerCell('Gross IRR', 'grossIrr')}
+              {headerCell('Net IRR', 'netIrr')}
+              {headerCell('After-WHT IRR', 'afterWhtIrr')}
+              {headerCell('After-Tax IRR', 'afterTaxIrr')}
+              {headerCell('DPI', 'dpi')}
+              {headerCell('RVPI', 'rvpi')}
+              {headerCell('TVPI', 'tvpi')}
+              {headerCell('MOIC', 'moic')}
               <th className="px-3 py-2">Actions</th>
             </tr>
           </thead>
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={9} className="p-4">
+                <td colSpan={17} className="p-4">
                   <EmptyState
                     icon={Building2}
                     message="No LPs onboarded yet. Import from Excel or add manually."
@@ -121,75 +195,52 @@ export function LPRegistryTable({ data, search, filters }: LPRegistryTableProps)
                 </td>
               </tr>
             ) : null}
-            {rows.map((lp) => {
-              const calledPct = Math.min(100, (lp.calledCapital / lp.commitmentAmount) * 100)
-              return (
-                <tr
-                  key={lp.id}
-                  className="cursor-pointer border-b border-bg-border/40 hover:bg-bg-elevated/40"
-                  onClick={() => setActiveLP(lp)}
-                >
-                  <td className="px-2 py-3" onClick={(event) => event.stopPropagation()}>
-                    <input
-                      type="checkbox"
-                      checked={selected.includes(lp.id)}
-                      onChange={(event) =>
-                        setSelected((prev) =>
-                          event.target.checked ? [...prev, lp.id] : prev.filter((id) => id !== lp.id)
-                        )
-                      }
-                    />
-                  </td>
-                  <td className="px-3 py-3">
-                    <p>{lp.legalName}</p>
-                    <span className="mt-1 inline-block rounded bg-bg-elevated px-2 py-0.5 text-xs capitalize text-text-secondary">
-                      {lp.entityType.replace('-', ' ')}
-                    </span>
-                  </td>
-                  <td className="px-3 py-3">{flags[lp.domicile] ?? '🌐'} {lp.domicile}</td>
-                  <td className="px-3 py-3">{formatCurrency(lp.commitmentAmount)}</td>
-                  <td className="px-3 py-3">
-                    <p>{formatCurrency(lp.calledCapital)}</p>
-                    <div className="mt-1 h-2 w-24 rounded bg-bg-border">
-                      <div className="h-2 rounded bg-accent-gold" style={{ width: `${calledPct}%` }} />
-                    </div>
-                    <p className="text-xs text-text-secondary">{calledPct.toFixed(1)}% called</p>
-                  </td>
-                  <td className="px-3 py-3">{formatCurrency(lp.distributionsReceived)}</td>
-                  <td className="px-3 py-3"><StatusBadge status={lp.kycStatus} /></td>
-                  <td className="px-3 py-3"><StatusBadge status={lp.subscriptionStatus} /></td>
-                  <td className="px-3 py-3" onClick={(event) => event.stopPropagation()}>
-                    <select className="rounded border border-bg-border bg-bg-elevated px-2 py-1 text-xs">
-                      <option>View</option>
-                      <option>Edit</option>
-                    </select>
-                  </td>
-                </tr>
-              )
-            })}
+            {rows.map((lp) => (
+              <tr key={lp.id} className="border-b border-bg-border/40 hover:bg-bg-elevated/30">
+                <td className="px-2 py-3">
+                  <input
+                    type="checkbox"
+                    checked={selected.includes(lp.id)}
+                    onChange={(event) =>
+                      setSelected((prev) =>
+                        event.target.checked ? [...prev, lp.id] : prev.filter((id) => id !== lp.id)
+                      )
+                    }
+                  />
+                </td>
+                <td className="px-3 py-3 font-medium">{lp.legalName}</td>
+                <td className="px-3 py-3">{flags[lp.domicile] ?? '🌐'} {lp.domicile}</td>
+                <td className="px-3 py-3 capitalize">{lp.entityType.replace('-', ' ')}</td>
+                <td className="px-3 py-3">{formatCurrency(lp.commitmentAmount)}</td>
+                <td className="px-3 py-3">{formatCurrency(lp.calledCapital)}</td>
+                <td className="px-3 py-3">{formatCurrency(lp.distributionsReceived)}</td>
+                <td className="px-3 py-3">{formatCurrency(lp.currentNav)}</td>
+                <td className="px-3 py-3">{formatPercent(lp.grossIrr, 2)}</td>
+                <td className={`px-3 py-3 font-semibold ${lp.netIrr > DEFAULT_HURDLE_RATE ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  {formatPercent(lp.netIrr, 2)}
+                </td>
+                <td className="px-3 py-3">{formatPercent(lp.afterWhtIrr, 2)}</td>
+                <td className="px-3 py-3">{formatPercent(lp.afterTaxIrr, 2)}</td>
+                <td className="px-3 py-3">{lp.dpi.toFixed(2)}</td>
+                <td className="px-3 py-3">{lp.rvpi.toFixed(2)}</td>
+                <td className="px-3 py-3">{lp.tvpi.toFixed(2)}</td>
+                <td className="px-3 py-3">{lp.moic.toFixed(2)}</td>
+                <td className="px-3 py-3">
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-1 rounded border border-bg-border px-2 py-1 text-xs"
+                    onClick={() => exportLPReport(lp)}
+                  >
+                    <Download className="h-3 w-3" />
+                    PDF
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
-
-      {activeLP ? (
-        <aside className="fixed right-0 top-0 z-40 h-full w-full max-w-md border-l border-bg-border bg-bg-surface p-6 shadow-2xl">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="font-serif text-xl">LP Detail</h3>
-            <button type="button" onClick={() => setActiveLP(null)} className="text-text-secondary">Close</button>
-          </div>
-          <dl className="space-y-3 text-sm">
-            <div><dt className="text-text-secondary">Name</dt><dd>{activeLP.legalName}</dd></div>
-            <div><dt className="text-text-secondary">Entity Type</dt><dd className="capitalize">{activeLP.entityType.replace('-', ' ')}</dd></div>
-            <div><dt className="text-text-secondary">Domicile</dt><dd>{activeLP.domicile}</dd></div>
-            <div><dt className="text-text-secondary">Commitment</dt><dd>{formatCurrency(activeLP.commitmentAmount)}</dd></div>
-            <div><dt className="text-text-secondary">Called Capital</dt><dd>{formatCurrency(activeLP.calledCapital)}</dd></div>
-            <div><dt className="text-text-secondary">Distributions</dt><dd>{formatCurrency(activeLP.distributionsReceived)}</dd></div>
-            <div><dt className="text-text-secondary">KYC Status</dt><dd>{activeLP.kycStatus}</dd></div>
-            <div><dt className="text-text-secondary">Subscription</dt><dd>{activeLP.subscriptionStatus}</dd></div>
-            <div><dt className="text-text-secondary">Relationship Manager</dt><dd>{activeLP.relationshipManager}</dd></div>
-          </dl>
-        </aside>
-      ) : null}
+      <p className="mt-2 text-xs text-text-secondary">Net IRR is color-coded against an {DEFAULT_HURDLE_RATE}% hurdle rate.</p>
     </section>
   )
 }
