@@ -34,11 +34,11 @@ const MIN_AUM_BY_JURISDICTION: Record<string, string> = {
 }
 
 export function generateStaticParams() {
-  return JURISDICTIONS.map((jurisdiction) => ({ id: jurisdiction.id }))
+  return JURISDICTIONS.map((jurisdiction) => ({ slug: jurisdiction.id }))
 }
 
-export default function JurisdictionDetailPage({ params }: { params: { id: string } }) {
-  const jurisdiction = JURISDICTIONS.find((item) => item.id === params.id)
+export default function JurisdictionDetailPage({ params }: { params: { slug: string } }) {
+  const jurisdiction = JURISDICTIONS.find((item) => item.id === params.slug)
 
   if (!jurisdiction) {
     notFound()
