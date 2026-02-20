@@ -320,7 +320,7 @@ export function InstantCostCalculator() {
                       <h3 className="font-serif text-xl text-text-primary">{j.name}</h3>
                       {index === 0 && (
                         <span className="rounded-full border border-accent-gold/30 bg-accent-gold/10 px-2 py-1 text-xs text-accent-gold">
-                          BEST VALUE
+                          Optimal Cost/Regulatory Profile
                         </span>
                       )}
                     </div>
