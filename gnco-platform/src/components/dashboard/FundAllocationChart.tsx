@@ -19,13 +19,17 @@ export function FundAllocationChart({ funds }: FundAllocationChartProps) {
   const total = useMemo(() => funds.reduce((sum, fund) => sum + fund.aum, 0), [funds])
   const data = useMemo(
     () =>
-      funds.map((fund) => ({
-        name: formatPrivate(fund.fundName, 'name', 'fund'),
-        rawName: fund.fundName,
-        value: fund.aum,
-        pct: ((fund.aum / total) * 100).toFixed(1),
-      })),
-    [formatPrivate, funds, total]
+      funds.map((fund) => {
+        const percentage = (fund.aum / total) * 100
+
+        return {
+          name: formatPrivate(fund.fundName, 'name', 'fund'),
+          rawName: fund.fundName,
+          value: isPrivacyMode ? Number(percentage.toFixed(2)) : fund.aum,
+          pct: percentage.toFixed(1),
+        }
+      }),
+    [formatPrivate, funds, isPrivacyMode, total]
   )
 
   return (
