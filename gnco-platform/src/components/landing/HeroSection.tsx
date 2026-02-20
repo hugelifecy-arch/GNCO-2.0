@@ -11,6 +11,7 @@ function StatsStrip() {
     <div className="mt-16 text-center">
       <p className="font-serif text-2xl text-accent-gold md:text-3xl">
         {JURISDICTIONS.length} Jurisdictions · 52 Templates ·{' '}
+        Under 30 min — Avg. time to full recommendation ·{' '}
         <a href="https://ilpa.org/reporting-template/" target="_blank" rel="noopener noreferrer">
           ILPA-Aligned ↗
         </a>
