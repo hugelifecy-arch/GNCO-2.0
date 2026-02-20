@@ -15,7 +15,6 @@ interface TreemapNode {
   name: string
   children?: TreemapNode[]
   value?: number
-  size: number
   fill?: string
   fund?: ExposureFund
 }
@@ -52,6 +51,11 @@ function formatViewValue(view: ExposureView, fund: ExposureFund) {
   return `${fund.netIRR.toFixed(1)}%`
 }
 
+function formatSignedCurrency(value: number) {
+  if (value > 0) return `+${currency.format(value)}`
+  return currency.format(value)
+}
+
 export function ExposureTreemap({ funds }: ExposureTreemapProps) {
   const [view, setView] = useState<ExposureView>('commitment')
 
@@ -73,25 +77,21 @@ export function ExposureTreemap({ funds }: ExposureTreemapProps) {
         gpMap.set(fund.gpName, existing)
       }
 
-      const gpChildren: TreemapNode[] = Array.from(gpMap.entries()).map(([gpName, gpFunds]) => ({
-        name: gpName,
-        size: gpFunds.reduce((sum, fund) => sum + fund.commitment, 0),
-        children: gpFunds.map((fund) => {
-          const maxCountryShare = Math.max(...fund.countryConcentration.map((item) => item.share))
-          return {
-            name: fund.fundName,
-            value: fund.commitment,
-            size: fund.commitment,
-            fill: concentrationColor(maxCountryShare),
-            fund,
-          }
-        }),
-      }))
-
       return {
         name: assetClass,
-        size: assetClassFunds.reduce((sum, fund) => sum + fund.commitment, 0),
-        children: gpChildren,
+        children: Array.from(gpMap.entries()).map(([gpName, gpFunds]) => ({
+          name: gpName,
+          children: gpFunds.map((fund) => {
+            const maxCountryShare = Math.max(...fund.countryConcentration.map((item) => item.share))
+
+            return {
+              name: fund.fundName,
+              value: fund.commitment,
+              fill: concentrationColor(maxCountryShare),
+              fund,
+            }
+          }),
+        })),
       }
     })
   }, [funds])
@@ -108,6 +108,7 @@ export function ExposureTreemap({ funds }: ExposureTreemapProps) {
             <button
               key={option.key}
               type="button"
+              aria-pressed={view === option.key}
               className={`rounded px-2.5 py-1.5 transition ${view === option.key ? 'bg-accent-gold/20 text-text-primary' : 'text-text-secondary hover:text-text-primary'}`}
               onClick={() => setView(option.key)}
             >
@@ -123,6 +124,7 @@ export function ExposureTreemap({ funds }: ExposureTreemapProps) {
             data={data}
             dataKey="value"
             stroke="#0D1520"
+            isAnimationActive={false}
             content={({ depth, x, y, width, height, name, payload }) => {
               const node = payload as TreemapNode
               const fill = depth === 3 ? node.fill ?? '#2563EB' : depth === 2 ? '#1F2937' : '#111827'
@@ -135,7 +137,7 @@ export function ExposureTreemap({ funds }: ExposureTreemapProps) {
                       {name}
                     </text>
                   ) : null}
-                  {depth === 3 && node.fund && width > 110 && height > 62 ? (
+                  {depth === 3 && node.fund && width > 112 && height > 62 ? (
                     <text x={x + 8} y={y + 34} fill="#CBD5E1" fontSize={11}>
                       {formatViewValue(view, node.fund)}
                     </text>
@@ -146,24 +148,28 @@ export function ExposureTreemap({ funds }: ExposureTreemapProps) {
           >
             <Tooltip
               contentStyle={{ backgroundColor: '#0D1520', border: '1px solid #1E2D42', borderRadius: 8 }}
-              formatter={(_value, _name, item) => {
-                const fund = (item.payload as TreemapNode).fund
+              content={({ active, payload }) => {
+                if (!active || !payload?.length) return null
+                const fund = (payload[0]?.payload as TreemapNode).fund
                 if (!fund) return null
-                const maxCountry = fund.countryConcentration.reduce((best, country) => (country.share > best.share ? country : best))
 
-                return [
-                  <div key={fund.fundName} className="space-y-1">
-                    <div className="font-medium text-text-primary">{fund.fundName}</div>
+                const sortedConcentration = [...fund.countryConcentration].sort((a, b) => b.share - a.share)
+                const topCountry = sortedConcentration[0]
+
+                return (
+                  <div className="rounded border border-bg-border bg-bg-surface p-3 text-xs text-text-secondary shadow-lg">
+                    <div className="mb-1 font-medium text-text-primary">{fund.fundName}</div>
                     <div>Commitment: {currency.format(fund.commitment)}</div>
                     <div>Current NAV: {currency.format(fund.currentNav)}</div>
-                    <div>Unrealized G/L: {currency.format(fund.unrealizedGainLoss)}</div>
+                    <div>Unrealized G/L: {formatSignedCurrency(fund.unrealizedGainLoss)}</div>
                     <div>Net IRR: {fund.netIRR.toFixed(1)}%</div>
-                    <div>
-                      Top country: {maxCountry.country} ({maxCountry.share}%) · {concentrationLabel(maxCountry.share)}
+                    <div className="mt-1">Top country: {topCountry.country} ({topCountry.share}%)</div>
+                    <div>{concentrationLabel(topCountry.share)}</div>
+                    <div className="mt-1">
+                      Concentration split: {sortedConcentration.map((item) => `${item.country} ${item.share}%`).join(' · ')}
                     </div>
-                  </div>,
-                  '',
-                ]
+                  </div>
+                )
               }}
             />
           </Treemap>
