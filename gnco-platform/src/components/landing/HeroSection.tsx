@@ -56,17 +56,19 @@ export function HeroSection() {
           INSTITUTIONAL FUND ARCHITECTURE
         </motion.p>
 
-        <h1 className="font-serif text-5xl leading-tight text-text-primary md:text-7xl">
+        <h1 className="font-serif text-5xl leading-tight tracking-normal whitespace-normal text-text-primary md:text-7xl">
           {headlineWords.map((word, index) => (
-            <motion.span
-              key={`${word}-${index}`}
-              className="mr-3 inline-block"
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.1 + index * 0.05 }}
-            >
-              {word}
-            </motion.span>
+            <span key={`${word}-${index}`}>
+              <motion.span
+                className="inline-block"
+                initial={{ opacity: 0, y: 28 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: 0.1 + index * 0.05 }}
+              >
+                {word}
+              </motion.span>
+              {index < headlineWords.length - 1 ? ' ' : ''}
+            </span>
           ))}
         </h1>
 
