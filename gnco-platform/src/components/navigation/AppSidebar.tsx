@@ -35,7 +35,10 @@ type NavSection = {
 const navSections: NavSection[] = [
   {
     title: 'Overview',
-    items: [{ label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard }],
+    items: [
+      { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+      { label: 'Compliance Calendar', href: '/dashboard/compliance', icon: FileText },
+    ],
   },
   {
     title: 'Module 1 — Architect',
