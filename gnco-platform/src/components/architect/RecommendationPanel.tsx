@@ -14,6 +14,7 @@ import { cn, formatCurrency } from '@/lib/utils'
 import { Citation } from '@/components/ui/Citation'
 
 import { BookCallCTA } from './BookCallCTA'
+import { AttorneyBrief } from '@/components/AttorneyBrief'
 
 interface RecommendationPanelProps {
   brief: ArchitectBrief
@@ -299,6 +300,8 @@ export function RecommendationPanel({ brief, onStartNew }: RecommendationPanelPr
         </button>
 
         <ShareResultsButton results={sharePayload} />
+
+        <AttorneyBrief brief={brief} recommendations={recommendations.slice(0, 3)} />
       </div>
 
       <BookCallCTA onBookCallClick={handleBookCall} />
