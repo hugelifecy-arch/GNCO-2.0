@@ -84,7 +84,7 @@ export function AttorneyBrief({ brief, recommendations }: AttorneyBriefProps) {
         disabled={exporting || !topThree[0]}
         className="rounded-md border border-accent-gold px-4 py-2 text-sm text-accent-gold disabled:opacity-60"
       >
-        {exporting ? 'Generating Attorney Brief...' : 'Generate Attorney Brief'}
+        {exporting ? 'Generating Attorney Brief (PDF)...' : 'Generate Attorney Brief (PDF)'}
       </button>
       {message ? <p className="text-xs text-text-secondary">{message}</p> : null}
     </div>
