@@ -7,6 +7,7 @@ import { AttorneyBrief } from '@/components/AttorneyBrief'
 import { generateRecommendations } from '@/lib/architect-logic'
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 import type { ArchitectBrief } from '@/lib/types'
+import { Citation } from '@/components/ui/Citation'
 
 const WIZARD_STORAGE_KEY = 'gnco:architect-brief'
 
@@ -110,7 +111,10 @@ export function ArchitectResultsClient() {
       <section className="rounded-xl border border-bg-border bg-bg-surface p-6">
         <h2 className="text-xl font-semibold">Why this ranked #1</h2>
         <p className="mt-3 text-sm text-text-secondary">
-          The methodology currently weights tax efficiency ({methodologyWeights.taxFriction}%), LP familiarity ({methodologyWeights.lpFamiliarity}%), speed to close ({methodologyWeights.timeToClose}%), and cost of formation ({methodologyWeights.cost}%) as core factors. Your current slider priorities emphasize cost ({tradeoffs.cost}%), time ({tradeoffs.time}%), LP familiarity ({tradeoffs.familiarity}%), and tax friction ({tradeoffs.taxFriction}%).
+          <Citation source="GNCO methodology weighting framework" url="https://gnco.ai/methodology" marker="4">
+            The methodology currently weights tax efficiency ({methodologyWeights.taxFriction}%), LP familiarity ({methodologyWeights.lpFamiliarity}%), speed to close ({methodologyWeights.timeToClose}%), and cost of formation ({methodologyWeights.cost}%) as core factors.
+          </Citation>{' '}
+          Your current slider priorities emphasize cost ({tradeoffs.cost}%), time ({tradeoffs.time}%), LP familiarity ({tradeoffs.familiarity}%), and tax friction ({tradeoffs.taxFriction}%).
         </p>
         <p className="mt-2 text-sm text-text-secondary">
           User-indicated priorities: {topPriorities.length ? topPriorities.join(', ') : 'No explicit priorities selected'}.

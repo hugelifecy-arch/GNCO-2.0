@@ -1,12 +1,14 @@
 'use client'
 
 import { Download, Info, Plus, Share2, Save } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts'
 
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 import { cn } from '@/lib/utils'
 import { usePrivacyMode } from '@/components/shared/PrivacyModeContext'
+import { Citation } from '@/components/ui/Citation'
 
 type LPMix = {
   institutional: number
@@ -191,12 +193,36 @@ export function ComparisonWorkspace() {
     URL.revokeObjectURL(url)
   }
 
-  const rows: Array<{ key: keyof MetricResult; label: string; render?: (value: MetricResult, rowId: string) => string }> = [
-    { key: 'formationCost', label: 'Formation cost (€)', render: (m) => formatPrivate(m.formationCost, 'currency') },
+  const rows: Array<{ key: keyof MetricResult; label: string; render?: (value: MetricResult, rowId: string) => ReactNode }> = [
+    {
+      key: 'formationCost',
+      label: 'Formation cost (€)',
+      render: (m) => (
+        <Citation source="Service provider estimates" url="https://gnco.ai/methodology" marker="1">
+          {formatPrivate(m.formationCost, 'currency')}
+        </Citation>
+      ),
+    },
     { key: 'annualCost', label: 'Annual running cost (€)', render: (m) => formatPrivate(m.annualCost, 'currency') },
-    { key: 'timeline', label: 'Timeline to launch' },
+    {
+      key: 'timeline',
+      label: 'Timeline to launch',
+      render: (m) => (
+        <Citation source="Relevant regulator setup guidance" url="https://gnco.ai/coverage" marker="2">
+          {m.timeline}
+        </Citation>
+      ),
+    },
     { key: 'taxAtFundLevel', label: 'Tax at fund level' },
-    { key: 'lpWithholding', label: 'LP withholding tax (avg)', render: (m) => `${m.lpWithholding}%` },
+    {
+      key: 'lpWithholding',
+      label: 'LP withholding tax (avg)',
+      render: (m) => (
+        <Citation source="Relevant tax authority and treaty references" url="https://gnco.ai/disclosures" marker="3">
+          {`${m.lpWithholding}%`}
+        </Citation>
+      ),
+    },
     { key: 'regulatoryBurden', label: 'Regulatory burden score (1–10)' },
     { key: 'lpFamiliarity', label: 'LP familiarity score (1–10)' },
     { key: 'euMarketing', label: 'EU marketing access (YES/NO/NPPR)' },

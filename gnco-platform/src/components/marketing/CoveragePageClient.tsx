@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useMemo, useState } from 'react'
 
 import { COVERAGE_DATA } from '@/data/coverage'
+import { Citation } from '@/components/ui/Citation'
 
 export function CoveragePageClient() {
   const [query, setQuery] = useState('')
@@ -41,8 +42,16 @@ export function CoveragePageClient() {
           {jurisdictions.map((jurisdiction) => (
             <article key={jurisdiction.slug} className="rounded-xl border border-bg-border bg-bg-elevated p-5">
               <h2 className="text-xl font-semibold">{jurisdiction.name}</h2>
-              <p className="mt-3 text-sm text-text-secondary">Formation cost: {jurisdiction.formationCostRange}</p>
-              <p className="text-sm text-text-secondary">Timeline: {jurisdiction.timelineRange}</p>
+              <p className="mt-3 text-sm text-text-secondary">
+                <Citation source="Service provider estimates" url="https://gnco.ai/methodology" marker="1">
+                  Formation cost: {jurisdiction.formationCostRange}
+                </Citation>
+              </p>
+              <p className="text-sm text-text-secondary">
+                <Citation source="Relevant regulator setup guidance" url="https://gnco.ai/coverage" marker="2">
+                  Timeline: {jurisdiction.timelineRange}
+                </Citation>
+              </p>
               <p className="mt-1 text-xs text-text-tertiary">Confidence: {jurisdiction.confidence}</p>
               <Link
                 href={`/coverage/${jurisdiction.slug}`}
