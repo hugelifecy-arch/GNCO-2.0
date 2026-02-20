@@ -3,14 +3,13 @@
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 
-import { COVERAGE_DATA } from '@/data/coverage'
+import { AttorneyBrief } from '@/components/AttorneyBrief'
 import { generateRecommendations } from '@/lib/architect-logic'
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
 import { saveStructure } from '@/lib/regulatory-updates-storage'
 import type { ArchitectBrief } from '@/lib/types'
 
 const WIZARD_STORAGE_KEY = 'gnco:architect-brief'
-const BRIEF_EXPORT_ENABLED = true
 
 const methodologyWeights = {
   taxFriction: 25,
@@ -54,8 +53,6 @@ function formatPriority(priority: string) {
 export function ArchitectResultsClient() {
   const [brief] = useState<Partial<ArchitectBrief> | null>(() => getSavedBrief())
   const [tradeoffs, setTradeoffs] = useState({ cost: 50, time: 50, familiarity: 50, taxFriction: 50 })
-  const [exporting, setExporting] = useState(false)
-  const [exportMessage, setExportMessage] = useState<string | null>(null)
 
   const topThree = useMemo(() => {
     if (!brief) return []
@@ -69,6 +66,7 @@ export function ArchitectResultsClient() {
 
   const topPriorities = (brief?.priorities ?? []).slice(0, 3).map(formatPriority)
 
+ codex/add-regulatoryupdate-data-model
   useEffect(() => {
     const topStructure = topThree[0]
     if (!topStructure) return
@@ -154,6 +152,8 @@ export function ArchitectResultsClient() {
     setExporting(false)
   }
 
+ main
+
   if (!brief) {
     return (
       <main className="mx-auto max-w-5xl space-y-6 px-6 py-14">
@@ -214,28 +214,7 @@ export function ArchitectResultsClient() {
         </ul>
       </section>
 
-      {BRIEF_EXPORT_ENABLED ? (
-        <div className="space-y-2">
-          <button
-            type="button"
-            onClick={exportBriefPdf}
-            disabled={exporting}
-            className="rounded-md border border-accent-gold px-4 py-2 text-sm text-accent-gold disabled:opacity-60"
-          >
-            {exporting ? 'Exporting PDF...' : 'Export PDF'}
-          </button>
-          {exportMessage ? <p className="text-xs text-text-secondary">{exportMessage}</p> : null}
-        </div>
-      ) : (
-        <button
-          type="button"
-          disabled
-          title="Coming soon"
-          className="cursor-not-allowed rounded-md border border-accent-gold/50 px-4 py-2 text-sm text-accent-gold/70"
-        >
-          Export PDF
-        </button>
-      )}
+      <AttorneyBrief brief={brief} recommendations={topThree} />
     </main>
   )
 }
