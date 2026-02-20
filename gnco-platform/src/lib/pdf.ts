@@ -56,7 +56,7 @@ function buildPdf(objects: string[]) {
   return Buffer.from(pdf, 'binary')
 }
 
-export function buildSimplePdf(title: string, date: string, sections: PdfSection[]) {
+export function buildSimplePdf(title: string, date: string, sections: PdfSection[], options?: { watermark?: string }) {
   const contentLines: string[] = [title, `Date: ${date}`, '']
 
   for (const section of sections) {
@@ -77,7 +77,11 @@ export function buildSimplePdf(title: string, date: string, sections: PdfSection
     .map((line, index) => `1 0 0 1 40 ${startY - index * lineHeight} Tm (${escapePdfText(line)}) Tj`)
     .join('\n')
 
-  const stream = `BT\n/F1 ${fontSize} Tf\n${textOperations}\nET`
+  const watermarkOps = options?.watermark
+    ? `\n0.85 0.2 0.2 rg\n1 0 0 1 140 420 Tm (${escapePdfText(options.watermark)}) Tj\n0 0 0 rg`
+    : ''
+
+  const stream = `BT\n/F1 ${fontSize} Tf\n${textOperations}${watermarkOps}\nET`
 
   const objects = [
     '1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n',

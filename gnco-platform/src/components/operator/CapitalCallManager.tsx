@@ -4,9 +4,11 @@ import { Fragment, useMemo, useState } from 'react'
 
 import { MOCK_CAPITAL_CALLS, MOCK_FUNDS, MOCK_LPS } from '@/lib/mock-data'
 import type { CapitalCall, LPAllocation } from '@/lib/types'
-import { formatCurrency, formatDate } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
+import { usePrivacyMode } from '@/components/shared/PrivacyModeContext'
 
 export function CapitalCallManager() {
+  const { formatPrivate } = usePrivacyMode()
   const [showModal, setShowModal] = useState(false)
   const [fundName, setFundName] = useState(MOCK_FUNDS[0]?.fundName ?? '')
   const [callDate, setCallDate] = useState('2025-02-15')
@@ -56,7 +58,7 @@ export function CapitalCallManager() {
             </div>
             <div className="grid gap-3 md:grid-cols-2">
               <select className="rounded border border-bg-border bg-bg-elevated px-3 py-2" value={fundName} onChange={(e) => setFundName(e.target.value)}>
-                {MOCK_FUNDS.map((fund) => <option key={fund.fundName}>{fund.fundName}</option>)}
+                {MOCK_FUNDS.map((fund) => <option key={fund.fundName}>{formatPrivate(fund.fundName, 'name', 'fund')}</option>)}
               </select>
               <input type="date" value={callDate} onChange={(e) => setCallDate(e.target.value)} className="rounded border border-bg-border bg-bg-elevated px-3 py-2" />
               <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="rounded border border-bg-border bg-bg-elevated px-3 py-2" />
@@ -81,7 +83,7 @@ export function CapitalCallManager() {
                   <tbody>
                     {allocations.map((alloc) => (
                       <tr key={alloc.lpId} className="border-b border-bg-border/40">
-                        <td className="px-2 py-2">{alloc.lpName}</td>
+                        <td className="px-2 py-2">{formatPrivate(alloc.lpName, 'name', 'lp')}</td>
                         <td className="px-2 py-2">{((alloc.allocationAmount / totalAmount) * 100).toFixed(2)}%</td>
                         <td className="px-2 py-2">
                           <input
@@ -135,12 +137,12 @@ export function CapitalCallManager() {
                 return (
                   <Fragment key={call.id}>
                     <tr className="border-b border-bg-border/40">
-                      <td className="px-2 py-2">{call.fundName}</td>
+                      <td className="px-2 py-2">{formatPrivate(call.fundName, 'name', 'fund')}</td>
                       <td className="px-2 py-2">{formatDate(call.callDate)}</td>
                       <td className="px-2 py-2">{formatDate(call.dueDate)}</td>
-                      <td className="px-2 py-2">{formatCurrency(call.totalAmount)}</td>
-                      <td className="px-2 py-2">{formatCurrency(paid)}</td>
-                      <td className="px-2 py-2">{formatCurrency(outstanding)}</td>
+                      <td className="px-2 py-2">{formatPrivate(call.totalAmount, 'currency')}</td>
+                      <td className="px-2 py-2">{formatPrivate(paid, 'currency')}</td>
+                      <td className="px-2 py-2">{formatPrivate(outstanding, 'currency')}</td>
                       <td className="px-2 py-2 capitalize">{call.status}</td>
                       <td className="px-2 py-2">
                         <div className="flex flex-wrap gap-1">
@@ -158,7 +160,7 @@ export function CapitalCallManager() {
                           <div className="grid gap-2 md:grid-cols-2">
                             {(call.lpAllocations.length ? call.lpAllocations : allocations.slice(0, 6)).map((alloc) => (
                               <div key={alloc.lpId} className="flex items-center justify-between rounded border border-bg-border px-3 py-2 text-xs">
-                                <span>{alloc.lpName}</span>
+                                <span>{formatPrivate(alloc.lpName, 'name', 'lp')}</span>
                                 <span className="capitalize text-text-secondary">{alloc.status}</span>
                               </div>
                             ))}

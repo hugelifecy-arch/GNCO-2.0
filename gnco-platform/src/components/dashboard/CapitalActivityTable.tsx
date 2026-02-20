@@ -3,13 +3,15 @@
 import { useMemo, useState } from 'react'
 
 import type { CapitalCall } from '@/lib/types'
-import { formatCurrency, formatDate } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
+import { usePrivacyMode } from '@/components/shared/PrivacyModeContext'
 
 interface CapitalActivityTableProps {
   calls: CapitalCall[]
 }
 
 export function CapitalActivityTable({ calls }: CapitalActivityTableProps) {
+  const { formatPrivate } = usePrivacyMode()
   const [page, setPage] = useState(1)
   const pageSize = 5
 
@@ -44,7 +46,7 @@ export function CapitalActivityTable({ calls }: CapitalActivityTableProps) {
           <tbody>
             {paged.map((row) => (
               <tr key={row.id} className="border-b border-bg-border/50">
-                <td className="px-3 py-3 text-text-primary">{row.fundName}</td>
+                <td className="px-3 py-3 text-text-primary">{formatPrivate(row.fundName, 'name', 'fund')}</td>
                 <td className="px-3 py-3">
                   <span
                     className={`rounded-full px-2 py-1 text-xs ${
@@ -56,7 +58,7 @@ export function CapitalActivityTable({ calls }: CapitalActivityTableProps) {
                     {row.type}
                   </span>
                 </td>
-                <td className="px-3 py-3">{formatCurrency(row.totalAmount)}</td>
+                <td className="px-3 py-3">{formatPrivate(row.totalAmount, 'currency')}</td>
                 <td className="px-3 py-3 text-text-secondary">{formatDate(row.callDate)}</td>
                 <td className="px-3 py-3 capitalize text-text-secondary">{row.status}</td>
               </tr>

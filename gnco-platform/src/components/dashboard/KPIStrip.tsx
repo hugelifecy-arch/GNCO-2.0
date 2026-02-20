@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { Area, AreaChart, ResponsiveContainer } from 'recharts'
 
 import { useCountUp } from '@/hooks/useCountUp'
+import { usePrivacyMode } from '@/components/shared/PrivacyModeContext'
 
 interface KPIStripProps {
   totalAUM: number
@@ -24,6 +25,7 @@ const sparklineData = [
 ]
 
 export function KPIStrip({ totalAUM, netIRR, unfundedCommitments, totalLPs, activeFunds }: KPIStripProps) {
+  const { formatPrivate } = usePrivacyMode()
   const aumValue = useCountUp({ end: totalAUM / 1_000_000_000, duration: 1500, decimals: 2 })
   const irrValue = useCountUp({ end: netIRR, duration: 1400, decimals: 1 })
   const unfundedValue = useCountUp({ end: unfundedCommitments / 1_000_000, duration: 1500, decimals: 0 })
@@ -33,7 +35,7 @@ export function KPIStrip({ totalAUM, netIRR, unfundedCommitments, totalLPs, acti
     () => [
       {
         title: 'Total AUM',
-        value: `$${aumValue.toFixed(2)}B`,
+        value: formatPrivate(aumValue * 1_000_000_000, 'currency'),
         subtitle: '+12.4% YTD',
         chart: true,
       },
@@ -44,7 +46,7 @@ export function KPIStrip({ totalAUM, netIRR, unfundedCommitments, totalLPs, acti
       },
       {
         title: 'Unfunded Commitments',
-        value: `$${unfundedValue.toFixed(0)}M`,
+        value: formatPrivate(unfundedValue * 1_000_000, 'currency'),
         subtitle: `Across ${activeFunds} active funds`,
       },
       {
@@ -53,7 +55,7 @@ export function KPIStrip({ totalAUM, netIRR, unfundedCommitments, totalLPs, acti
         subtitle: `Across ${activeFunds} funds`,
       },
     ],
-    [activeFunds, aumValue, irrValue, lpValue, unfundedValue]
+    [activeFunds, aumValue, formatPrivate, irrValue, lpValue, unfundedValue]
   )
 
   return (

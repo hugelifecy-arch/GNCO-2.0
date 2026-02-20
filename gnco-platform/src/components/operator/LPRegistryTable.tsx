@@ -6,7 +6,8 @@ import { useMemo, useState } from 'react'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { calculateLPAttribution, DEFAULT_HURDLE_RATE } from '@/lib/lp-attribution'
 import type { LPEntry } from '@/lib/types'
-import { formatCurrency, formatPercent } from '@/lib/utils'
+import { formatPercent } from '@/lib/utils'
+import { usePrivacyMode } from '@/components/shared/PrivacyModeContext'
 
 interface LPRegistryTableProps {
   data: LPEntry[]
@@ -51,6 +52,7 @@ const flags: Record<string, string> = {
 }
 
 export function LPRegistryTable({ data, search, filters }: LPRegistryTableProps) {
+  const { formatPrivate, isPrivacyMode } = usePrivacyMode()
   const [sortKey, setSortKey] = useState<SortKey>('netIrr')
   const [sortAsc, setSortAsc] = useState(false)
   const [selected, setSelected] = useState<string[]>([])
@@ -98,14 +100,14 @@ export function LPRegistryTable({ data, search, filters }: LPRegistryTableProps)
   const exportLPReport = async (lp: TableRow) => {
     const payload = {
       generatedAt: new Date().toISOString().slice(0, 10),
-      lpName: lp.legalName,
+      lpName: formatPrivate(lp.legalName, 'name', 'lp'),
       domicile: lp.domicile,
       entityType: lp.entityType,
       rows: [
-        { label: 'Commitment (€)', value: formatCurrency(lp.commitmentAmount) },
-        { label: 'Called Capital (€)', value: formatCurrency(lp.calledCapital) },
-        { label: 'Distributions Received (€)', value: formatCurrency(lp.distributionsReceived) },
-        { label: 'Current NAV (€)', value: formatCurrency(lp.currentNav) },
+        { label: 'Commitment (€)', value: formatPrivate(lp.commitmentAmount, 'currency') },
+        { label: 'Called Capital (€)', value: formatPrivate(lp.calledCapital, 'currency') },
+        { label: 'Distributions Received (€)', value: formatPrivate(lp.distributionsReceived, 'currency') },
+        { label: 'Current NAV (€)', value: formatPrivate(lp.currentNav, 'currency') },
         { label: 'Gross IRR', value: formatPercent(lp.grossIrr, 2) },
         { label: 'Net IRR', value: formatPercent(lp.netIrr, 2) },
         { label: 'After-WHT IRR', value: formatPercent(lp.afterWhtIrr, 2) },
@@ -120,7 +122,7 @@ export function LPRegistryTable({ data, search, filters }: LPRegistryTableProps)
     const response = await fetch('/api/export/lp-attribution', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ ...payload, privacyMode: isPrivacyMode }),
     })
 
     if (!response.ok) return
@@ -129,7 +131,7 @@ export function LPRegistryTable({ data, search, filters }: LPRegistryTableProps)
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `lp-attribution-${lp.legalName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${payload.generatedAt}.pdf`
+    link.download = `lp-attribution-${payload.lpName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${payload.generatedAt}.pdf`
     link.click()
     window.URL.revokeObjectURL(url)
   }
@@ -208,13 +210,13 @@ export function LPRegistryTable({ data, search, filters }: LPRegistryTableProps)
                     }
                   />
                 </td>
-                <td className="px-3 py-3 font-medium">{lp.legalName}</td>
+                <td className="px-3 py-3 font-medium">{formatPrivate(lp.legalName, 'name', 'lp')}</td>
                 <td className="px-3 py-3">{flags[lp.domicile] ?? '🌐'} {lp.domicile}</td>
                 <td className="px-3 py-3 capitalize">{lp.entityType.replace('-', ' ')}</td>
-                <td className="px-3 py-3">{formatCurrency(lp.commitmentAmount)}</td>
-                <td className="px-3 py-3">{formatCurrency(lp.calledCapital)}</td>
-                <td className="px-3 py-3">{formatCurrency(lp.distributionsReceived)}</td>
-                <td className="px-3 py-3">{formatCurrency(lp.currentNav)}</td>
+                <td className="px-3 py-3">{formatPrivate(lp.commitmentAmount, 'currency')}</td>
+                <td className="px-3 py-3">{formatPrivate(lp.calledCapital, 'currency')}</td>
+                <td className="px-3 py-3">{formatPrivate(lp.distributionsReceived, 'currency')}</td>
+                <td className="px-3 py-3">{formatPrivate(lp.currentNav, 'currency')}</td>
                 <td className="px-3 py-3">{formatPercent(lp.grossIrr, 2)}</td>
                 <td className={`px-3 py-3 font-semibold ${lp.netIrr > DEFAULT_HURDLE_RATE ? 'text-emerald-400' : 'text-rose-400'}`}>
                   {formatPercent(lp.netIrr, 2)}
