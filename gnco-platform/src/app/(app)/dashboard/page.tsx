@@ -1,4 +1,5 @@
 import { CapitalActivityTable } from '@/components/dashboard/CapitalActivityTable'
+import { ExposureTreemap } from '@/components/dashboard/ExposureTreemap'
 import { FundAllocationChart } from '@/components/dashboard/FundAllocationChart'
 import { KPIStrip } from '@/components/dashboard/KPIStrip'
 import { PerformanceChart } from '@/components/dashboard/PerformanceChart'
@@ -8,6 +9,7 @@ import { ErrorBoundary } from '@/components/shared/ErrorBoundary'
 import {
   MOCK_CAPITAL_CALLS,
   MOCK_DOCUMENTS,
+  MOCK_EXPOSURE_FUNDS,
   MOCK_FUNDS,
   MOCK_KPI_SUMMARY,
   MOCK_PERFORMANCE_DATA,
@@ -32,6 +34,11 @@ export default function DashboardPage() {
 
       <ErrorBoundary>
         <PerformanceChart data={MOCK_PERFORMANCE_DATA} />
+      </ErrorBoundary>
+
+
+      <ErrorBoundary>
+        <ExposureTreemap funds={MOCK_EXPOSURE_FUNDS} />
       </ErrorBoundary>
 
       <section className="grid gap-6 lg:grid-cols-2">

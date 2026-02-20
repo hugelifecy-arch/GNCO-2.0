@@ -165,6 +165,20 @@ export interface PerformanceDataPoint {
   nav: number
 }
 
+export interface ExposureFund {
+  assetClass: 'PE' | 'RE' | 'VC' | 'Credit' | 'Infrastructure'
+  gpName: string
+  fundName: string
+  commitment: number
+  currentNav: number
+  netIRR: number
+  unrealizedGainLoss: number
+  countryConcentration: {
+    country: string
+    share: number
+  }[]
+}
+
 export interface WaterfallInput {
   totalProceeds: number
   preferredReturn: number // % e.g. 8
