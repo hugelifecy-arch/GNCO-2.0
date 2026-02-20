@@ -5,6 +5,7 @@ import { KPIStrip } from '@/components/dashboard/KPIStrip'
 import { PerformanceChart } from '@/components/dashboard/PerformanceChart'
 import { RecentDocuments } from '@/components/dashboard/RecentDocuments'
 import { SavedComparisons } from '@/components/dashboard/SavedComparisons'
+import { VintageHeatmap } from '@/components/dashboard/VintageHeatmap'
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary'
 import {
   MOCK_CAPITAL_CALLS,
@@ -36,9 +37,14 @@ export default function DashboardPage() {
         <PerformanceChart data={MOCK_PERFORMANCE_DATA} />
       </ErrorBoundary>
 
+ codex/create-exposuretreemap-component-using-recharts
 
       <ErrorBoundary>
         <ExposureTreemap funds={MOCK_EXPOSURE_FUNDS} />
+
+      <ErrorBoundary>
+        <VintageHeatmap />
+ main
       </ErrorBoundary>
 
       <section className="grid gap-6 lg:grid-cols-2">
