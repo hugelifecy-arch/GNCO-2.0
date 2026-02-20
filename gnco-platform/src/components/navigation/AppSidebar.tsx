@@ -19,6 +19,7 @@ import {
   Handshake,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { PrivacyModeToggleButton } from '@/components/shared/PrivacyModeContext'
 
 type NavItem = {
   label: string
@@ -79,10 +80,13 @@ export function AppSidebar() {
   return (
     <aside className="sticky top-0 hidden h-screen w-16 shrink-0 border-r border-bg-border bg-bg-primary lg:w-60 md:flex">
       <div className="flex h-full w-full flex-col px-2 py-5 lg:px-4">
-        <Link href="/dashboard" className="flex items-center gap-2 px-2">
-          <span className="text-sm text-accent-gold">◆</span>
-          <span className="hidden font-serif text-lg font-semibold text-accent-gold lg:inline">GNCO</span>
-        </Link>
+        <div className="flex items-center justify-between px-2">
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <span className="text-sm text-accent-gold">◆</span>
+            <span className="hidden font-serif text-lg font-semibold text-accent-gold lg:inline">GNCO</span>
+          </Link>
+          <PrivacyModeToggleButton />
+        </div>
         <div className="my-4 border-t border-bg-border" />
 
         <nav className="flex-1 space-y-4 overflow-y-auto">

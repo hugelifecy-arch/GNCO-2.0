@@ -5,10 +5,11 @@ import { useState } from 'react'
 import { calculateWaterfall } from '@/lib/waterfall-calculator'
 import { MOCK_FUNDS, MOCK_LPS } from '@/lib/mock-data'
 import type { WaterfallOutput } from '@/lib/types'
-import { formatCurrency } from '@/lib/utils'
 import { ComingSoonButton } from '@/components/shared/ComingSoonButton'
+import { usePrivacyMode } from '@/components/shared/PrivacyModeContext'
 
 export function WaterfallCalculator() {
+  const { formatPrivate } = usePrivacyMode()
   const [fund, setFund] = useState(MOCK_FUNDS[0]?.fundName ?? '')
   const [proceeds, setProceeds] = useState(160000000)
   const [hurdle, setHurdle] = useState(8)
@@ -40,7 +41,7 @@ export function WaterfallCalculator() {
         <h2 className="mb-4 font-serif text-xl">Inputs</h2>
         <div className="grid gap-3">
           <select className="rounded border border-bg-border bg-bg-elevated px-3 py-2" value={fund} onChange={(e) => setFund(e.target.value)}>
-            {MOCK_FUNDS.map((f) => <option key={f.fundName}>{f.fundName}</option>)}
+            {MOCK_FUNDS.map((f) => <option key={f.fundName}>{formatPrivate(f.fundName, 'name', 'fund')}</option>)}
           </select>
           <input type="number" value={proceeds} onChange={(e) => setProceeds(Number(e.target.value))} className="rounded border border-bg-border bg-bg-elevated px-3 py-2" placeholder="Total Distributable Proceeds" />
           <input type="number" value={hurdle} onChange={(e) => setHurdle(Number(e.target.value))} className="rounded border border-bg-border bg-bg-elevated px-3 py-2" placeholder="Preferred Return / Hurdle" />
@@ -67,7 +68,7 @@ export function WaterfallCalculator() {
               {result.tiers.map((tier) => (
                 <div key={tier.tierName} className="flex items-center justify-between rounded border border-bg-border px-3 py-2 text-sm">
                   <span>{tier.tierName}</span>
-                  <span className="text-accent-gold">{formatCurrency(tier.totalAmount)}</span>
+                  <span className="text-accent-gold">{formatPrivate(tier.totalAmount, 'currency')}</span>
                 </div>
               ))}
             </div>
@@ -96,9 +97,9 @@ export function WaterfallCalculator() {
                     const commitment = MOCK_LPS.find((entry) => entry.id === lp.lpId)?.commitmentAmount ?? 0
                     return (
                       <tr key={lp.lpId} className="border-b border-bg-border/30">
-                        <td className="px-2 py-2">{lp.lpName}</td>
-                        <td className="px-2 py-2">{formatCurrency(commitment)}</td>
-                        <td className="px-2 py-2">{formatCurrency(lp.amount)}</td>
+                        <td className="px-2 py-2">{formatPrivate(lp.lpName, 'name', 'lp')}</td>
+                        <td className="px-2 py-2">{formatPrivate(commitment, 'currency')}</td>
+                        <td className="px-2 py-2">{formatPrivate(lp.amount, 'currency')}</td>
                         <td className="px-2 py-2">{lp.effectiveReturn.toFixed(2)}%</td>
                       </tr>
                     )
@@ -106,14 +107,14 @@ export function WaterfallCalculator() {
                   <tr className="font-medium">
                     <td className="px-2 py-2">Total</td>
                     <td className="px-2 py-2">-</td>
-                    <td className="px-2 py-2">{formatCurrency(result.totalDistributed - result.gpCarry)}</td>
+                    <td className="px-2 py-2">{formatPrivate(result.totalDistributed - result.gpCarry, 'currency')}</td>
                     <td className="px-2 py-2">-</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <p className="text-sm">GP Carry: <span className="text-accent-gold">{formatCurrency(result.gpCarry)}</span></p>
+            <p className="text-sm">GP Carry: <span className="text-accent-gold">{formatPrivate(result.gpCarry, 'currency')}</span></p>
             <div className="flex flex-wrap gap-2">
               <ComingSoonButton>Export as Excel (coming soon)</ComingSoonButton>
               <ComingSoonButton>Generate Notices (coming soon)</ComingSoonButton>

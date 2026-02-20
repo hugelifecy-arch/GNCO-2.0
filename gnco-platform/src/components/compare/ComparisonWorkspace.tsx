@@ -5,7 +5,8 @@ import { useMemo, useState } from 'react'
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts'
 
 import { JURISDICTIONS } from '@/lib/jurisdiction-data'
-import { cn, formatCurrency } from '@/lib/utils'
+import { cn } from '@/lib/utils'
+import { usePrivacyMode } from '@/components/shared/PrivacyModeContext'
 
 type LPMix = {
   institutional: number
@@ -102,6 +103,7 @@ function getMetricForColumn(input: CompareInput, column: ComparisonColumn): Metr
 }
 
 export function ComparisonWorkspace() {
+  const { formatPrivate, isPrivacyMode } = usePrivacyMode()
   const [input, setInput] = useState<CompareInput>({ fundSize: 250_000_000, strategy: 'buyout', lpMix: { institutional: 0.6, familyOffice: 0.25, sovereign: 0.15 } })
   const [columns, setColumns] = useState<ComparisonColumn[]>([
     { jurisdictionId: 'luxembourg', vehicle: 'RAIF' },
@@ -170,14 +172,15 @@ export function ComparisonWorkspace() {
   const exportPdf = () => {
     const lines = [
       'GNCO COMPARISON SUMMARY',
-      `Fund size: €${input.fundSize.toLocaleString()}`,
+      `Fund size: ${formatPrivate(input.fundSize, 'currency')}`,
       `Strategy: ${input.strategy}`,
       ...results.map((result) => {
         const jurisdiction = JURISDICTIONS.find((item) => item.id === result.jurisdictionId)?.name || result.jurisdictionId
-        return `${jurisdiction} (${result.vehicle}) | Score ${result.metrics.overallScore} | Formation ${formatCurrency(result.metrics.formationCost, true)} | Annual ${formatCurrency(result.metrics.annualCost, true)}`
+        return `${formatPrivate(jurisdiction, 'name', 'fund')} (${result.vehicle}) | Score ${result.metrics.overallScore} | Formation ${formatPrivate(result.metrics.formationCost, 'currency')} | Annual ${formatPrivate(result.metrics.annualCost, 'currency')}`
       }),
     ]
-    const stream = `BT /F1 10 Tf 50 760 Td (${lines.join('\n').replace(/[()]/g, '').replace(/\n/g, ') Tj T* (')}) Tj ET`
+    const watermark = isPrivacyMode ? '1 0 0 1 150 420 Tm (CONFIDENTIAL — PORTFOLIO OVERVIEW) Tj\n' : ''
+    const stream = `BT /F1 10 Tf 50 760 Td (${lines.join('\n').replace(/[()]/g, '').replace(/\n/g, ') Tj T* (')}) Tj T* ${watermark}ET`
     const pdf = `%PDF-1.4\n1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >> endobj\n4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj\n5 0 obj << /Length ${stream.length} >> stream\n${stream}\nendstream endobj\nxref\n0 6\n0000000000 65535 f \n0000000010 00000 n \n0000000060 00000 n \n0000000117 00000 n \n0000000243 00000 n \n0000000313 00000 n \ntrailer << /Root 1 0 R /Size 6 >>\nstartxref\n${350 + stream.length}\n%%EOF`
     const blob = new Blob([pdf], { type: 'application/pdf' })
     const url = URL.createObjectURL(blob)
@@ -189,8 +192,8 @@ export function ComparisonWorkspace() {
   }
 
   const rows: Array<{ key: keyof MetricResult; label: string; render?: (value: MetricResult, rowId: string) => string }> = [
-    { key: 'formationCost', label: 'Formation cost (€)', render: (m) => formatCurrency(m.formationCost, true) },
-    { key: 'annualCost', label: 'Annual running cost (€)', render: (m) => formatCurrency(m.annualCost, true) },
+    { key: 'formationCost', label: 'Formation cost (€)', render: (m) => formatPrivate(m.formationCost, 'currency') },
+    { key: 'annualCost', label: 'Annual running cost (€)', render: (m) => formatPrivate(m.annualCost, 'currency') },
     { key: 'timeline', label: 'Timeline to launch' },
     { key: 'taxAtFundLevel', label: 'Tax at fund level' },
     { key: 'lpWithholding', label: 'LP withholding tax (avg)', render: (m) => `${m.lpWithholding}%` },

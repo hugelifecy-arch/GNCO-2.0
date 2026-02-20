@@ -14,6 +14,7 @@ const lpAttributionExportSchema = z.object({
       value: z.string().min(1),
     })
   ),
+  privacyMode: z.boolean().optional(),
 })
 
 export async function POST(request: NextRequest) {
@@ -24,12 +25,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, message: 'Invalid LP attribution payload.' }, { status: 400 })
   }
 
-  const { generatedAt, lpName, domicile, entityType, rows } = parsed.data
+  const { generatedAt, lpName, domicile, entityType, rows, privacyMode } = parsed.data
 
   const pdf = buildSimplePdf(`LP Attribution Report: ${lpName}`, generatedAt, [
     { heading: 'LP Profile', lines: [`Domicile: ${domicile}`, `Entity Type: ${entityType}`] },
     { heading: 'Performance Attribution', lines: rows.map((row) => `${row.label}: ${row.value}`) },
-  ])
+  ], {
+    watermark: privacyMode ? 'CONFIDENTIAL — PORTFOLIO OVERVIEW' : undefined,
+  })
 
   return new NextResponse(pdf, {
     status: 200,
